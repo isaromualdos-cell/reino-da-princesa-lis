@@ -1,20 +1,289 @@
 "use client";
-import {useCallback,useEffect,useRef,useState} from "react";
-const styles=[{name:"Coroa",icon:"👑",color:"#f3c2d2"},{name:"Castelo",icon:"🏰",color:"#d8c3e8"},{name:"Flores",icon:"🌸",color:"#f4c8ce"},{name:"Estrelas",icon:"✨",color:"#ead29b"},{name:"Aventura",icon:"🍄",color:"#bddccc"}];
-function decorate(ctx:CanvasRenderingContext2D,w:number,h:number,index:number){const s=styles[index],unit=Math.min(w/900,h/1200);ctx.save();ctx.lineWidth=40*unit;ctx.strokeStyle=s.color;ctx.strokeRect(20*unit,20*unit,w-40*unit,h-40*unit);ctx.lineWidth=12*unit;ctx.strokeStyle="#f9e8b9";ctx.strokeRect(48*unit,48*unit,w-96*unit,h-96*unit);ctx.textAlign="center";ctx.font=`${85*unit}px serif`;ctx.fillText(s.icon,w/2,110*unit);ctx.fillStyle="#fff8efeb";ctx.fillRect(55*unit,h-155*unit,w-110*unit,100*unit);ctx.fillStyle="#a45c78";ctx.font=`bold ${46*unit}px Georgia`;ctx.fillText("Lis • 1 aninho",w/2,h-88*unit);ctx.restore()}
-export default function Home(){
-const video=useRef<HTMLVideoElement>(null),stream=useRef<MediaStream|null>(null),upload=useRef<HTMLInputElement>(null);
-const [camera,setCamera]=useState(false),[needsPermission,setNeedsPermission]=useState(false),[error,setError]=useState(""),[facing,setFacing]=useState<"user"|"environment">("environment"),[frame,setFrame]=useState(0),[photo,setPhoto]=useState<string|null>(null),[result,setResult]=useState<string|null>(null),[busy,setBusy]=useState(false);
-const stop=useCallback(()=>{stream.current?.getTracks().forEach(t=>t.stop());stream.current=null;setCamera(false)},[]);
-const start=useCallback(async(direction:"user"|"environment")=>{if(!navigator.mediaDevices?.getUserMedia){setNeedsPermission(true);setError("Este navegador não permite usar a câmera. Você pode escolher uma foto da galeria.");return}try{stream.current?.getTracks().forEach(t=>t.stop());stream.current=null;const s=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:direction},width:{ideal:3840},height:{ideal:2160},frameRate:{ideal:30}}});stream.current=s;if(video.current){video.current.srcObject=s;await video.current.play()}setCamera(true);setNeedsPermission(false);setError("")}catch{setCamera(false);setNeedsPermission(true);setError("Autorize a câmera no navegador ou escolha uma foto da galeria.")}},[]);
-useEffect(()=>{start("environment");return()=>{stream.current?.getTracks().forEach(t=>t.stop())}},[start]);
-useEffect(()=>{if(camera&&video.current&&stream.current){video.current.srcObject=stream.current;video.current.play().catch(()=>{})}},[camera]);
-useEffect(()=>()=>{if(photo)URL.revokeObjectURL(photo);if(result)URL.revokeObjectURL(result)},[photo,result]);
-function choose(file?:File){if(!file)return;if(!file.type.startsWith("image/"))return setError("Escolha uma imagem válida.");stop();setPhoto(URL.createObjectURL(file));setResult(null);setNeedsPermission(false);setError("")}
-async function capture(){if(!video.current||!video.current.videoWidth)return;const v=video.current,c=document.createElement("canvas");const maxSide=4096;const nativeW=Math.min(v.videoWidth,v.videoHeight*0.75),nativeH=Math.min(v.videoHeight,v.videoWidth/0.75);const ratio=Math.min(1,maxSide/Math.max(nativeW,nativeH));c.width=Math.max(1,Math.round(nativeW*ratio));c.height=Math.max(1,Math.round(nativeH*ratio));const ctx=c.getContext("2d");if(!ctx)return;ctx.imageSmoothingQuality="high";const scale=Math.max(c.width/v.videoWidth,c.height/v.videoHeight),dw=v.videoWidth*scale,dh=v.videoHeight*scale;ctx.save();if(facing==="user"){ctx.translate(c.width,0);ctx.scale(-1,1)}ctx.drawImage(v,(c.width-dw)/2,(c.height-dh)/2,dw,dh);ctx.restore();decorate(ctx,c.width,c.height,frame);const blob=await new Promise<Blob|null>(r=>c.toBlob(r,"image/png"));if(blob){setResult(URL.createObjectURL(blob));stop()}}
-async function prepareUpload(){if(!photo)return;setBusy(true);try{const img=new Image();img.src=photo;await img.decode();const c=document.createElement("canvas");const maxSide=4096,nativeW=Math.min(img.width,img.height*0.75),nativeH=Math.min(img.height,img.width/0.75),ratio=Math.min(1,maxSide/Math.max(nativeW,nativeH));c.width=Math.max(1,Math.round(nativeW*ratio));c.height=Math.max(1,Math.round(nativeH*ratio));const ctx=c.getContext("2d");if(!ctx)throw Error();ctx.imageSmoothingQuality="high";const scale=Math.max(c.width/img.width,c.height/img.height),dw=img.width*scale,dh=img.height*scale;ctx.drawImage(img,(c.width-dw)/2,(c.height-dh)/2,dw,dh);decorate(ctx,c.width,c.height,frame);const blob=await new Promise<Blob|null>(r=>c.toBlob(r,"image/png"));if(blob)setResult(URL.createObjectURL(blob))}catch{setError("Não foi possível preparar essa foto.")}finally{setBusy(false)}}
-function download(){if(!result)return;const a=document.createElement("a");a.href=result;a.download="reino-da-princesa-lis.png";a.click()}
-async function share(){if(!result)return;const blob=await fetch(result).then(r=>r.blob()),file=new File([blob],"princesa-lis.png",{type:"image/png"});try{if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:"Reino da Princesa Lis"});return}}catch(e){if((e as Error).name==="AbortError")return}download()}
-async function retake(){setResult(null);setPhoto(null);setNeedsPermission(false);await start(facing)}
-return <main className="cameraPage"><header className="cameraHeader"><span>👑</span><div><strong>Reino da Princesa Lis</strong><small>Um aninho de magia ✨</small></div></header><section className="viewfinder" aria-label="Câmera com moldura"><video ref={video} playsInline muted autoPlay className={"feed "+(facing==="user"?"mirror":"")} style={{display:camera&&!photo&&!result?"block":"none"}}/>{photo&&!result&&<img className="feed" src={photo} alt="Foto escolhida"/>}{result&&<img className="feed" src={result} alt="Foto com moldura pronta"/>}{!camera&&!photo&&!result&&<div className="placeholder">👑<p>Um momento mágico merece uma foto!</p></div>}{!result&&<div className="liveFrame" style={{borderColor:styles[frame].color}}><div className="frameIcon">{styles[frame].icon}</div><div className="frameTitle">Lis • 1 aninho</div></div>}</section>{!result&&<div className="frameChoices" aria-label="Escolha a moldura">{styles.map((s,i)=><button key={s.name} className={i===frame?"selected":""} onClick={()=>setFrame(i)} aria-label={"Moldura "+s.name} title={s.name}>{s.icon}</button>)}</div>}<div className="cameraActions">{result?<><button className="action" onClick={download}>⬇️ Salvar foto</button><button className="action main" onClick={share}>💌 Compartilhar</button><button className="action" onClick={retake}>↻ Outra foto</button></>:photo?<><button className="action main" disabled={busy} onClick={prepareUpload}>{busy?"Preparando...":"✨ Usar essa foto"}</button><button className="action" onClick={()=>{setPhoto(null);start(facing)}}>↻ Voltar à câmera</button></>:<><button className="action iconAction" onClick={()=>upload.current?.click()} aria-label="Escolher foto">▧</button><button className="shutter" disabled={!camera} onClick={capture} aria-label="Tirar foto"><span/></button><button className="action iconAction" disabled={!camera} onClick={()=>{const next=facing==="user"?"environment":"user";setFacing(next);start(next)}} aria-label="Virar câmera">🔄</button></>}</div><input ref={upload} type="file" accept="image/*" hidden onChange={e=>choose(e.target.files?.[0])}/>{needsPermission&&!photo&&!result&&<div className="modalShade"><div className="modal"><div className="modalCrown">👑</div><h2>Um clique de magia!</h2><p>{error||"Permita o acesso à câmera para começar a diversão."}</p><button className="action main" onClick={()=>start(facing)}>📸 Abrir câmera</button><button className="action" onClick={()=>upload.current?.click()}>🌸 Escolher da galeria</button></div></div>}<p className="demo">Prévia de teste · As fotos não são enviadas ao site.</p></main>
+// SVG overlays and browser-local blob URLs use unmodified image sources.
+/* eslint-disable @next/next/no-img-element */
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { compose, loadImage } from "./photo";
+
+type Direction = "user" | "environment";
+const frames = [
+  "Castelo da Princesa Lis",
+  "Mundo dos Cogumelos",
+  "Aventura da Princesa",
+  "Jardim Encantado",
+  "Level 1 completo!",
+];
+const frameUrl = (index: number) => "/frames/" + (index + 1) + ".svg";
+
+function useObjectUrl(blob: Blob | null) {
+  const [entry, setEntry] = useState<{ blob: Blob; url: string } | null>(null);
+  useEffect(() => {
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    setEntry({ blob, url });
+    return () => URL.revokeObjectURL(url);
+  }, [blob]);
+  return entry && entry.blob === blob ? entry.url : null;
+}
+
+export default function Home() {
+  const video = useRef<HTMLVideoElement>(null);
+  const gallery = useRef<HTMLInputElement>(null);
+  const nativeCamera = useRef<HTMLInputElement>(null);
+  const stream = useRef<MediaStream | null>(null);
+  const request = useRef(0);
+  const cameraStatus = useRef<"starting" | "ready" | "idle">("idle");
+  const lastDirection = useRef<Direction>("environment");
+  const shouldResume = useRef(false);
+  const [direction, setDirection] = useState<Direction>("environment");
+  const [status, setStatus] = useState<"starting" | "ready" | "idle">("starting");
+  const [frame, setFrame] = useState(0);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [result, setResult] = useState<File | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const photoUrl = useObjectUrl(photo);
+  const resultUrl = useObjectUrl(result);
+
+  const stop = useCallback(() => {
+    request.current++;
+    stream.current?.getTracks().forEach(track => track.stop());
+    stream.current = null;
+    if (video.current) video.current.srcObject = null;
+    cameraStatus.current = "idle";
+  }, []);
+
+  const start = useCallback(async (wanted: Direction, switching = false) => {
+    stop();
+    const ticket = request.current;
+    cameraStatus.current = "starting";
+    setStatus("starting");
+    setError("");
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("Câmera indisponível neste navegador. Use a câmera do celular ou escolha uma foto.");
+      }
+      const open = (facingMode: ConstrainDOMString) => navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          facingMode,
+          width: { ideal: 3840 },
+          height: { ideal: 2160 },
+          frameRate: { ideal: 30 },
+        },
+      });
+      let selectedDirection = wanted;
+      let recovered = false;
+      let media: MediaStream;
+      try {
+        media = await open(switching ? { exact: wanted } : { ideal: wanted });
+      } catch (cause) {
+        const name = cause instanceof Error ? cause.name : "";
+        if (!switching || !["OverconstrainedError", "NotFoundError"].includes(name)) throw cause;
+        if (ticket !== request.current) return;
+        selectedDirection = lastDirection.current;
+        media = await open({ ideal: selectedDirection });
+        recovered = true;
+      }
+      if (ticket !== request.current || !video.current) {
+        media.getTracks().forEach(track => track.stop());
+        return;
+      }
+      stream.current = media;
+      const track = media.getVideoTracks()[0];
+      const facingMode = track.getSettings().facingMode;
+      const actual = facingMode === "user" || facingMode === "environment" ? facingMode : selectedDirection;
+      video.current.srcObject = media;
+      await video.current.play();
+      if (ticket !== request.current) return;
+      track.addEventListener("ended", () => {
+        if (ticket !== request.current) return;
+        stop();
+        setStatus("idle");
+        setError("A câmera foi interrompida. Tente abrir novamente.");
+      }, { once: true });
+      lastDirection.current = actual;
+      setDirection(actual);
+      cameraStatus.current = "ready";
+      setStatus("ready");
+      if (recovered) setError("A outra câmera não está disponível neste dispositivo.");
+    } catch (cause) {
+      if (ticket !== request.current) return;
+      const name = cause instanceof Error ? cause.name : "";
+      stop();
+      setStatus("idle");
+      const message = name === "NotAllowedError"
+        ? "Libere o acesso à câmera nas permissões do navegador ou escolha uma foto."
+        : name === "NotReadableError"
+          ? "A câmera está ocupada. Feche outros apps que a estejam usando e tente novamente."
+          : "Câmera indisponível. Use a câmera do celular ou escolha uma foto.";
+      setError(message);
+    }
+  }, [stop]);
+
+  useEffect(() => {
+    const resume = () => {
+      if (shouldResume.current && document.visibilityState === "visible") {
+        shouldResume.current = false;
+        void start(lastDirection.current);
+      }
+    };
+    const suspend = () => {
+      if (cameraStatus.current === "idle") return;
+      shouldResume.current = true;
+      stop();
+      setStatus("idle");
+    };
+    const onVisibility = () => document.hidden ? suspend() : resume();
+    void start("environment");
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", suspend);
+    window.addEventListener("pageshow", resume);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", suspend);
+      window.removeEventListener("pageshow", resume);
+      stop();
+    };
+  }, [start, stop]);
+
+  async function choose(file: File | undefined) {
+    if (!file) return;
+    if ((file.type && !file.type.startsWith("image/")) || file.size > 40 * 1024 * 1024) {
+      setError("Escolha uma imagem de até 40 MB.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    const url = URL.createObjectURL(file);
+    try {
+      await loadImage(url);
+      shouldResume.current = false;
+      stop();
+      setStatus("idle");
+      setPhoto(file);
+    } catch {
+      setError("Não foi possível abrir essa imagem. Tente uma foto em JPEG ou PNG.");
+    } finally {
+      URL.revokeObjectURL(url);
+      setBusy(false);
+    }
+  }
+
+  async function capture() {
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const output = photoUrl
+        ? await compose(await loadImage(photoUrl), frameUrl(frame), false)
+        : await compose(video.current, frameUrl(frame), direction === "user");
+      shouldResume.current = false;
+      stop();
+      setStatus("idle");
+      setResult(output);
+    } catch {
+      setError("Não foi possível preparar a foto. Tente novamente.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function download() {
+    if (!resultUrl || !result) return;
+    const link = document.createElement("a");
+    link.href = resultUrl;
+    link.download = result.name;
+    document.body.append(link);
+    link.click();
+    link.remove();
+  }
+
+  async function share() {
+    if (!result) return;
+    setError("");
+    try {
+      if (navigator.canShare?.({ files: [result] })) {
+        await navigator.share({ files: [result] });
+        return;
+      }
+      download();
+      setError("Compartilhamento indisponível aqui. Abra a foto salva para enviá-la pelo app que preferir.");
+    } catch (cause) {
+      if (cause instanceof Error && cause.name === "AbortError") return;
+      setError("Não foi possível compartilhar. Use Salvar foto e envie pelo app que preferir.");
+    }
+  }
+
+  function reset() {
+    setPhoto(null);
+    setResult(null);
+    void start(lastDirection.current);
+  }
+
+  const live = status === "ready" && !photo && !result;
+  return (
+    <main className="cameraPage">
+      <header className="cameraHeader">
+        <img src="/crown.svg" alt="" width="46" height="39" />
+        <div><h1>O Reino da Princesa Lis</h1><p>28.11.2026 · LEVEL 1</p></div>
+      </header>
+      <section className="viewfinder" aria-label="Enquadramento da foto">
+        <video ref={video} playsInline muted autoPlay hidden={!live}
+          className={"feed" + (direction === "user" ? " mirror" : "")} />
+        {photoUrl && !result && <img className="feed" src={photoUrl} alt="Enquadramento da foto escolhida" />}
+        {resultUrl && <img className="feed" src={resultUrl} alt="Foto com moldura pronta" />}
+        {!result && <img className="liveFrame" src={frameUrl(frame)} alt="" />}
+        {!live && !photo && !result && (
+          <div className="placeholder">
+            <img src="/crown.svg" width="58" height="49" alt="" />
+            {status === "starting" ? <p role="status">Abrindo a câmera…</p> : <>
+              <button className="action main" onClick={() => start(lastDirection.current)}>Abrir câmera</button>
+              <button className="action" onClick={() => nativeCamera.current?.click()}>Usar câmera do celular</button>
+            </>}
+          </div>
+        )}
+      </section>
+      {!result && (
+        <div className="framePicker">
+          <div className="frameChoices" role="group" aria-label="Molduras">
+            {frames.map((name, index) => (
+              <button key={name} aria-label={name} aria-pressed={index === frame}
+                disabled={busy} onClick={() => setFrame(index)}>
+                <img src={frameUrl(index)} alt="" />
+              </button>
+            ))}
+          </div>
+          <p aria-live="polite">{frames[frame]}</p>
+        </div>
+      )}
+      <div className="cameraActions">
+        {result ? <>
+          <button className="action" disabled={!resultUrl} onClick={download}>Salvar foto</button>
+          <button className="action main" onClick={share}>Compartilhar</button>
+          {photo && <button className="action" onClick={() => { setError(""); setResult(null); }}>Trocar moldura</button>}
+          <button className="action" onClick={reset}>Outra foto</button>
+        </> : photo ? <>
+          <button className="action main" disabled={busy || !photoUrl} onClick={capture}>Usar esta foto</button>
+          <button className="action" disabled={busy} onClick={reset}>Voltar à câmera</button>
+        </> : <>
+          <button className="action side" disabled={busy} onClick={() => gallery.current?.click()}>Galeria</button>
+          <button className="shutter" disabled={!live || busy} onClick={capture} aria-label="Fotografar"><span /></button>
+          <button className="action side" disabled={!live || busy}
+            onClick={() => start(direction === "user" ? "environment" : "user", true)}>Virar</button>
+        </>}
+      </div>
+      <input ref={gallery} type="file" accept="image/*" hidden onChange={event => {
+        void choose(event.target.files?.[0]);
+        event.target.value = "";
+      }} />
+      <input ref={nativeCamera} type="file" accept="image/*" capture="environment" hidden onChange={event => {
+        void choose(event.target.files?.[0]);
+        event.target.value = "";
+      }} />
+      {busy && <p role="status" className="notice">Preparando a foto…</p>}
+      {error && <p role="status" className="notice">{error}</p>}
+      <p className="privacy">As fotos são processadas neste dispositivo.</p>
+    </main>
+  );
 }

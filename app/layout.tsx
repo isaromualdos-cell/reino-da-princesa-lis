@@ -1,4 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
-export const metadata: Metadata = {title:"Reino da Princesa Lis",description:"Fotos do primeiro aniversário da Lis"};
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="pt-BR"><body>{children}</body></html>}
+
+export const metadata: Metadata = {
+  title: "O Reino da Princesa Lis",
+  description: "Câmera do primeiro aniversário da Lis",
+  icons: { icon: "/crown.svg" },
+};
+
+export const viewport: Viewport = { viewportFit: "cover", themeColor: "#b6ecff" };
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="pt-BR"><body>{children}</body></html>;
+}
