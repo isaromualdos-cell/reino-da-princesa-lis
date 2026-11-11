@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   icons: { icon: "/royaume/crest.webp" },
 };
 
-export const viewport: Viewport = { viewportFit: "cover", themeColor: "#fcf2e8" };
+export const viewport: Viewport = { viewportFit: "cover", themeColor: "#f7eee6" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="pt-BR"><body>{children}</body></html>;
