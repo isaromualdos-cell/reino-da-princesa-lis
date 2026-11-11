@@ -7,14 +7,13 @@ import { compose, loadImage } from "./photo";
 
 type Direction = "user" | "environment";
 const frames = [
-  "Castelo da Princesa Lis",
-  "Mundo dos Cogumelos",
-  "Aventura da Princesa",
-  "Jardim Encantado",
-  "Level 1 completo!",
+  { name: "Lis Clássica", label: "Clássica", slug: "01-lis-classica" },
+  { name: "Fase da Lis", label: "Fase da Lis", slug: "02-fase-da-lis" },
+  { name: "Jardim dos Cogumelos", label: "Jardim", slug: "03-jardim-dos-cogumelos" },
+  { name: "Caminho das Moedas", label: "Moedas", slug: "04-caminho-das-moedas" },
+  { name: "Chegada ao Castelo", label: "Castelo", slug: "05-chegada-ao-castelo" },
 ];
-const themeLabels = ["Castelo", "Cogumelos", "Aventura", "Jardim", "Level 1"];
-const frameUrl = (index: number) => "/royaume/" + (index + 1) + ".webp";
+const frameUrl = (index: number) => "/molduras/" + frames[index].slug + ".png";
 
 function ControlIcon({ name }: { name: "gallery" | "capture" | "flip" }) {
   const paths = {
@@ -266,15 +265,15 @@ export default function Home() {
       {!result && (
         <div className="framePicker">
           <div className="frameChoices" role="group" aria-label="Molduras">
-            {frames.map((name, index) => (
+            {frames.map(({ name, label, slug }, index) => (
               <button key={name} aria-label={name} aria-pressed={index === frame}
                 disabled={busy} onClick={() => setFrame(index)}>
-                <img src={"/royaume/thumb-" + (index + 1) + ".webp"} alt="" />
-                <span>{themeLabels[index]}</span>
+                <img src={"/molduras/" + slug + "-mini.webp"} alt="" />
+                <span>{label}</span>
               </button>
             ))}
           </div>
-          <p aria-live="polite">{frames[frame]}</p>
+          <p aria-live="polite">{frames[frame].name}</p>
         </div>
       )}
       <div className="cameraActions">

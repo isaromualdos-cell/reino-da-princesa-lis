@@ -12,13 +12,13 @@ npm run typecheck
 npm run build
 ```
 
-Use localhost ou HTTPS para testar a câmera. O app abre com preferência pela câmera traseira. A prévia e a exportação usam corte central 3:4 e a mesma moldura WebP transparente. A selfie é espelhada. A exportação PNG usa os pixels disponíveis nesse recorte, com limite de 3072 × 4096 para limitar o consumo de memória. A seleção de apps depende do menu de compartilhamento do sistema. Sem suporte ao compartilhamento de arquivos, o app baixa o PNG.
+Use localhost ou HTTPS para testar a câmera. O app abre com preferência pela câmera traseira. A prévia e a exportação usam corte central 3:4 e o mesmo PNG transparente. A selfie é espelhada. A exportação PNG usa os pixels disponíveis nesse recorte, com limite de 3072 × 4096 para limitar o consumo de memória. A seleção de apps depende do menu de compartilhamento do sistema. Sem suporte ao compartilhamento de arquivos, o app baixa o PNG.
 
 ## Direção de arte
 
 O convite organiza castelo, bandeiras, cogumelos e moedas em torno de uma área central clara. A câmera usa a mesma lógica. O creme do papel (#fcf2e8), o branco quente (#fffaf3), o rosa antigo (#9c4969) e o dourado fosco (#d9b789) sustentam a interface. O lilás, o verde sálvia e o azul pálido entram nas ilustrações. A coroa com joia rosa acompanha a assinatura em serifada, com DM Sans nos controles e no subtítulo.
 
-As cinco composições têm ilustrações nas extremidades e centro transparente. Castelo, Cogumelos, Aventura, Jardim e Level 1 têm distribuição própria e um título sobre faixa pintada. A câmera e a exportação leem o mesmo WebP de 1800 × 2400. O seletor usa miniaturas de 174 × 132 com a ilustração principal de cada fase. O cartão de permissão só aparece após uma falha e pode ser fechado.
+As cinco molduras foram fornecidas em Molduras_Lis_Site.zip e seguem a ordem dos arquivos, de Lis Clássica a Chegada ao Castelo. A câmera e a exportação leem os mesmos PNGs de 1086 × 1448. As miniaturas WebP são derivadas dos PNGs. O cartão de permissão só aparece após uma falha e pode ser fechado.
 
 As ilustrações partiram de um atlas original criado com ImageGen a partir do convite como referência. O prompt pediu 12 peças isoladas em fundo transparente, com aquarela e guache sobre papel, granulação suave e contornos terrosos. As peças foram coroa com joia rosa, castelo com torres e bandeiras, cogumelos rosa e lilás, moeda, bloco de interrogação, plataforma, lírios, bandeira de chegada, estrela sorridente, nuvens, cano verde e faixa rosa com friso dourado.
 
