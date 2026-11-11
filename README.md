@@ -22,6 +22,10 @@ As cinco molduras foram fornecidas em Molduras_Lis_Site.zip e seguem a ordem dos
 
 As ilustrações partiram de um atlas original criado com ImageGen a partir do convite como referência. O prompt pediu 12 peças isoladas em fundo transparente, com aquarela e guache sobre papel, granulação suave e contornos terrosos. As peças foram coroa com joia rosa, castelo com torres e bandeiras, cogumelos rosa e lilás, moeda, bloco de interrogação, plataforma, lírios, bandeira de chegada, estrela sorridente, nuvens, cano verde e faixa rosa com friso dourado.
 
-## Galeria privada
+## Álbum privado da festa
 
-O app processa fotos localmente e o upload está desativado. O repositório não contém configuração Firebase. Para ativar a galeria, é necessário confirmar o ID e o bucket do projeto Aniversario-Lis-2026, obter acesso autorizado de configuração, habilitar Firebase Auth e identificar a conta da organizadora. Antes de aceitar fotos reais, implementar consentimento, validação no servidor, limites de tamanho e frequência, armazenamento sem URLs públicas e autorização administrativa para listar, baixar e excluir. Manter credenciais administrativas no ambiente do servidor. Validar a separação entre convidados e administradora antes de habilitar o envio.
+Cada foto finalizada com moldura é enviada para a pasta `aniversario-lis/` do armazenamento privado Vercel Blob. A organizadora acessa os arquivos pelo painel Storage do projeto. O site dos convidados permite enviar, baixar a própria foto e compartilhar, sem listar o conteúdo do álbum.
+
+O armazenamento deve estar conectado ao projeto com `BLOB_READ_WRITE_TOKEN`. O envio usa JPEG de até 4 MB, com resolução de até 1620 × 2160. O download continua sendo o PNG produzido pela câmera. Cada captura tem um identificador único, preservado ao tentar novamente um envio.
+
+A interface informa sobre o envio antes da captura e mostra se o álbum recebeu a foto. Em caso de falha, a pessoa pode repetir o envio ou baixar a própria cópia.

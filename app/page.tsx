@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { compose, loadImage } from "./photo";
+import { compose, loadImage, prepareAlbumPhoto } from "./photo";
 
 type Direction = "user" | "environment";
 const frames = [
@@ -53,6 +53,8 @@ export default function Home() {
   const [photo, setPhoto] = useState<File | null>(null);
   const [result, setResult] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const uploadId = useRef("");
+  const [albumStatus, setAlbumStatus] = useState<"idle" | "sending" | "saved" | "failed">("idle");
   const [error, setError] = useState("");
   const [permissionDismissed, setPermissionDismissed] = useState(false);
   const photoUrl = useObjectUrl(photo);
@@ -184,6 +186,23 @@ export default function Home() {
     }
   }
 
+  async function saveToAlbum(file: File, id: string) {
+    setAlbumStatus("sending");
+    try {
+      const image = await prepareAlbumPhoto(file);
+      const response = await fetch("/api/fotos", {
+        method: "POST",
+        headers: { "Content-Type": "image/jpeg", "X-Photo-Id": id },
+        body: image,
+        signal: AbortSignal.timeout(25_000),
+      });
+      if (!response.ok) throw new Error("Upload failed");
+      setAlbumStatus("saved");
+    } catch {
+      setAlbumStatus("failed");
+    }
+  }
+
   async function capture() {
     if (busy) return;
     setBusy(true);
@@ -195,7 +214,9 @@ export default function Home() {
       shouldResume.current = false;
       stop();
       setStatus("idle");
+      uploadId.current = crypto.randomUUID();
       setResult(output);
+      void saveToAlbum(output, uploadId.current);
     } catch {
       setError("Não foi possível preparar a foto. Tente novamente.");
     } finally {
@@ -225,13 +246,14 @@ export default function Home() {
       setError("Compartilhamento indisponível aqui. Abra a foto salva para enviá-la pelo app que preferir.");
     } catch (cause) {
       if (cause instanceof Error && cause.name === "AbortError") return;
-      setError("Não foi possível compartilhar. Use Salvar foto e envie pelo app que preferir.");
+      setError("Não foi possível compartilhar. Use Baixar foto e envie pelo app que preferir.");
     }
   }
 
   function reset() {
     setPhoto(null);
     setResult(null);
+    setAlbumStatus("idle");
     void start(lastDirection.current);
   }
 
@@ -280,10 +302,10 @@ export default function Home() {
       )}
       <div className="cameraActions">
         {result ? <>
-          <button className="action" disabled={!resultUrl} onClick={download}>Salvar foto</button>
+          <button className="action" disabled={!resultUrl} onClick={download}>Baixar foto</button>
           <button className="action main" onClick={share}>Compartilhar</button>
-          {photo && <button className="action" onClick={() => { setError(""); setResult(null); }}>Trocar moldura</button>}
-          <button className="action" onClick={reset}>Outra foto</button>
+          {photo && <button className="action" disabled={albumStatus === "sending"} onClick={() => { setError(""); setResult(null); setAlbumStatus("idle"); }}>Trocar moldura</button>}
+          <button className="action" disabled={albumStatus === "sending"} onClick={reset}>Outra foto</button>
         </> : photo ? <>
           <button className="action main" disabled={busy || !photoUrl || !frameReady} onClick={capture}>Usar esta foto</button>
           <button className="action" disabled={busy} onClick={reset}>Voltar à câmera</button>
@@ -306,7 +328,15 @@ export default function Home() {
       }} />
       {busy && <p role="status" className="notice">Preparando a foto…</p>}
       {error && !showPermission && (!awaiting || !permissionDismissed) && <p role="status" className="notice">{error}</p>}
-      <p className="privacy">As fotos são processadas neste dispositivo.</p>
+      {result && albumStatus === "sending" && <p role="status" className="notice">Enviando para o álbum da Lis…</p>}
+      {result && albumStatus === "saved" && <p role="status" className="notice">Foto salva no álbum da Lis.</p>}
+      {result && albumStatus === "failed" && (
+        <>
+          <p role="status" className="notice">A foto ainda não foi salva no álbum.</p>
+          <button className="action" onClick={() => void saveToAlbum(result, uploadId.current)}>Tentar enviar de novo</button>
+        </>
+      )}
+      {!result && <p className="privacy">Ao fotografar ou usar uma foto, você envia uma cópia com moldura ao álbum privado da festa.</p>}
     </main>
   );
 }

@@ -45,3 +45,27 @@ export async function compose(
     canvas.height = 0;
   }
 }
+
+export async function prepareAlbumPhoto(file: File) {
+  const url = URL.createObjectURL(file);
+  const canvas = document.createElement("canvas");
+  try {
+    const image = await loadImage(url);
+    const units = Math.min(Math.floor(image.naturalWidth / 3), 540);
+    canvas.width = units * 3;
+    canvas.height = units * 4;
+    const ctx = canvas.getContext("2d", { alpha: false });
+    if (!ctx) throw new Error("Canvas unavailable");
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    for (const quality of [0.92, 0.8, 0.65]) {
+      const photo = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, "image/jpeg", quality));
+      if (photo?.type === "image/jpeg" && photo.size <= 4_000_000) return photo;
+    }
+    throw new Error("Photo exceeds upload limit");
+  } finally {
+    URL.revokeObjectURL(url);
+    canvas.width = 0;
+    canvas.height = 0;
+  }
+}
