@@ -12,6 +12,8 @@ const frames = [
   { name: "Jardim dos Cogumelos", label: "Jardim", slug: "03-jardim-dos-cogumelos" },
   { name: "Caminho das Moedas", label: "Moedas", slug: "04-caminho-das-moedas" },
   { name: "Chegada ao Castelo", label: "Castelo", slug: "05-chegada-ao-castelo" },
+  { name: "Lis Letreiro", label: "Letreiro", slug: "06-lis-letreiro" },
+  { name: "Lis Essencial", label: "Essencial", slug: "07-lis-essencial" },
 ];
 const frameUrl = (index: number) => "/molduras/" + frames[index].slug + ".png";
 

@@ -116,8 +116,12 @@ button:focus-visible { outline: 2px solid #733650; outline-offset: 3px; }
   border: 0; background: none; color: #72374f; font-size: 11px;
   font-weight: 750; text-decoration: underline; text-underline-offset: 3px;
 }
-.framePicker { width: min(100%, 458px); text-align: center; }
-.frameChoices { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(4px, 1.65vw, 10px); }
+.framePicker { width: min(100%, 458px); min-width: 0; text-align: center; }
+.frameChoices {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(58px, 1fr);
+  gap: 6px; padding: 4px; overflow-x: auto; scrollbar-width: thin;
+  scrollbar-color: #c98fa4 transparent;
+}
 .frameChoices button {
   position: relative; min-width: 0; padding: 3px; overflow: hidden;
   border: 1px solid #e2c3aa; border-radius: 12px;
