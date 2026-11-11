@@ -1,56 +1,166 @@
 @font-face {
   font-family: "DM Sans";
   src: url("/fonts/dm-sans-latin.woff2") format("woff2");
-  font-style: normal;
   font-weight: 400 900;
   font-display: swap;
 }
+
 * { box-sizing: border-box; }
-:root { color: #492b46; background: #fff6f9; font-family: "DM Sans", system-ui, sans-serif; }
-body { margin: 0; min-height: 100dvh; background: linear-gradient(155deg, #b6ecff, #f8eefd 63%, #ffe1ec); }
-button { font: inherit; }
-button:focus-visible { outline: 3px solid #10669a; outline-offset: 3px; }
-button:not(:disabled) { cursor: pointer; }
-button:disabled { opacity: .48; }
-.cameraPage {
-  width: min(100%, 550px);
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: max(10px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right))
-    max(12px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+:root {
+  color: #573544;
+  background: #fcf2e8;
+  font-family: "DM Sans", system-ui, sans-serif;
+  --plum: #6f304b;
+  --rose: #9c4969;
+  --paper: #fffaf3;
+  --gold-line: #d9b789;
 }
-.cameraHeader { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; }
-.cameraHeader h1 { color: #89244e; font-size: clamp(18px, 5vw, 25px); line-height: 1.1; margin: 0; }
-.cameraHeader p { color: #5d426b; font-weight: 800; font-size: 11px; letter-spacing: .16em; margin: 4px 0 0; }
+body {
+  min-width: 0;
+  min-height: 100dvh;
+  margin: 0;
+  background: #fcf2e8 url("/royaume/kingdom.webp") center 54% / min(1150px, 108vw) auto no-repeat;
+}
+button { font: inherit; }
+button:not(:disabled) { cursor: pointer; }
+button:disabled { opacity: .5; }
+button:focus-visible { outline: 2px solid #733650; outline-offset: 3px; }
+
+.cameraPage {
+  width: min(100%, 530px);
+  margin-inline: auto;
+  display: grid;
+  justify-items: center;
+  gap: 11px;
+  padding: max(12px, env(safe-area-inset-top)) max(13px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom)) max(13px, env(safe-area-inset-left));
+}
+.cameraHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  text-align: left;
+  margin: 0 0 2px;
+}
+.cameraHeader img { width: 48px; height: 38px; object-fit: contain; }
+.cameraHeader h1 {
+  color: #713450;
+  font: 700 clamp(18px, 4.9vw, 26px)/1.06 Georgia, serif;
+  letter-spacing: -.045em;
+  margin: 0;
+}
+.cameraHeader p {
+  color: #795064;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .17em;
+  margin: 4px 0 0;
+}
 .viewfinder {
-  width: min(100%, clamp(205px, calc((100dvh - 235px) * .75), 495px));
-  aspect-ratio: 3 / 4;
   position: relative;
-  overflow: hidden;
   isolation: isolate;
-  border-radius: 22px;
-  background: radial-gradient(ellipse at 50% 35%, #546990, #2f3757 75%);
-  box-shadow: 0 12px 30px #38324a30, 0 0 0 2px #fff9;
+  width: min(100%, clamp(220px, calc((100dvh - 221px) * .75), 465px));
+  aspect-ratio: 3 / 4;
+  border-radius: 23px;
+  overflow: hidden;
+  background: #f9e9df;
+  outline: 1px solid #d3ab83;
+  outline-offset: 3px;
+  box-shadow: 0 6px 18px #784a3e21;
+}
+.viewfinder.awaiting::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/royaume/kingdom.webp") center / auto 60% no-repeat;
+  opacity: .32;
 }
 .feed, .liveFrame { position: absolute; inset: 0; width: 100%; height: 100%; }
 .feed { object-fit: cover; }
 .mirror { transform: scaleX(-1); }
 .liveFrame { pointer-events: none; }
-.placeholder { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 8px; color: white; }
-.placeholder p { margin: 0; }
-.framePicker { text-align: center; margin-top: 12px; }
-.frameChoices { display: flex; gap: clamp(4px, 2vw, 10px); }
-.frameChoices button { width: clamp(39px, 13vw, 52px); padding: 4px; border: 2px solid #fff; border-radius: 12px; background: #d8f3fc; }
-.frameChoices button[aria-pressed="true"] { border-color: #ad2460; background: #fff0f7; box-shadow: 0 2px #ad2460; }
-.frameChoices img { display: block; width: 100%; aspect-ratio: 3/4; }
-.framePicker p { font-size: 12px; font-weight: 750; margin: 8px 0 0; }
-.cameraActions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 9px; margin-top: 10px; }
-.action { min-height: 44px; padding: 8px 11px; border: 1px solid #b15376; border-radius: 12px; background: #fff8fb; color: #78294d; font-size: 13px; font-weight: 800; }
-.action.main { background: #b91a62; border-color: #93134b; color: #fff; }
-.action.side { min-width: 71px; }
-.shutter { width: 58px; height: 58px; border-radius: 50%; background: #fff9fb; border: 3px solid #a9215c; padding: 5px; }
-.shutter span { display: block; width: 100%; height: 100%; border-radius: 50%; background: #d52a78; }
-.notice, .privacy { text-align: center; font-size: 12px; margin: 7px 0 0; }
-.notice { font-weight: 700; max-width: 34ch; }
+.opening {
+  position: absolute;
+  top: 44%;
+  inset-inline: 0;
+  margin: 0 auto;
+  width: max-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--plum);
+  font-size: 12px;
+  font-weight: 750;
+}
+.permission {
+  position: absolute;
+  inset: auto 9% 23%;
+  padding: 13px 14px 11px;
+  background: var(--paper);
+  border: 1px solid var(--gold-line);
+  border-radius: 18px;
+  box-shadow: 0 8px 18px #75434b22;
+  text-align: center;
+}
+.permission h2 { margin: 0 17px; font: bold 17px/1.1 Georgia, serif; color: var(--plum); }
+.permission p { margin: 6px 0 9px; font-size: 12px; line-height: 1.35; }
+.permission .close {
+  position: absolute; right: 2px; top: 2px;
+  display: grid; place-items: center;
+  width: 37px; height: 37px; padding: 0;
+  border: 0; background: none; color: var(--plum); font-size: 19px;
+}
+.permission .native {
+  min-height: 40px; padding: 3px 5px; margin: 0 auto; display: block;
+  border: 0; background: none; color: #72374f; font-size: 11px;
+  font-weight: 750; text-decoration: underline; text-underline-offset: 3px;
+}
+.framePicker { width: min(100%, 458px); text-align: center; }
+.frameChoices { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(4px, 1.65vw, 10px); }
+.frameChoices button {
+  position: relative; min-width: 0; padding: 3px; overflow: hidden;
+  border: 1px solid #e2c3aa; border-radius: 12px;
+  background: #fff9f0; color: #644152;
+}
+.frameChoices button[aria-pressed="true"] {
+  border-color: #9e4c69; box-shadow: inset 0 0 0 1px #9e4c69;
+  background: #f8e2e9; color: #6c2f49;
+}
+.frameChoices img {
+  display: block; width: 100%; height: clamp(42px, 14vw, 73px);
+  object-fit: contain; background: #f4e8db; border-radius: 8px;
+}
+.frameChoices span { display: block; font-weight: 800; font-size: clamp(8px, 2.35vw, 11px); line-height: 1.1; padding: 4px 0 2px; }
+.framePicker p { margin: 6px 0 0; font: bold 14px/1.15 Georgia, serif; color: var(--plum); }
+.cameraActions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.action {
+  min-height: 44px; padding: 6px 12px; border: 1px solid #dfb8b5; border-radius: 12px;
+  background: var(--paper); color: var(--plum); font-size: 12px; font-weight: 800;
+}
+.action.main { background: #813c59; border-color: #813c59; color: white; }
+.action.side { display: inline-flex; justify-content: center; align-items: center; gap: 5px; min-width: 78px; }
+.action svg, .shutter svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.shutter {
+  display: grid; place-items: center; width: 56px; height: 56px;
+  border-radius: 50%; background: #fff6e8; border: 1px solid #bb8c55; padding: 4px;
+  box-shadow: 0 2px 0 #d9b789;
+}
+.shutter span {
+  display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%;
+  color: #fff; background: #a64f71; border: 1px solid #8a3b59;
+}
+.shutter svg { width: 23px; height: 23px; }
+.notice, .privacy { margin: 0; text-align: center; font-size: 11px; }
+.notice { font-weight: 750; max-width: 34ch; }
+.privacy { color: #785c64; }
+
+@media (min-width: 720px) {
+  body { background-size: min(1240px, 115vw) auto; }
+  .cameraPage { gap: 12px; }
+}
+@media (max-height: 660px) {
+  .cameraPage { gap: 8px; }
+  .cameraHeader img { width: 40px; height: 32px; }
+  .frameChoices img { height: 47px; }
+}

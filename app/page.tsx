@@ -1,5 +1,5 @@
 "use client";
-// SVG overlays and browser-local blob URLs use unmodified image sources.
+// The image overlays and browser-local blob URLs use unmodified image sources.
 /* eslint-disable @next/next/no-img-element */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -13,7 +13,17 @@ const frames = [
   "Jardim Encantado",
   "Level 1 completo!",
 ];
-const frameUrl = (index: number) => "/frames/" + (index + 1) + ".svg";
+const themeLabels = ["Castelo", "Cogumelos", "Aventura", "Jardim", "Level 1"];
+const frameUrl = (index: number) => "/royaume/" + (index + 1) + ".webp";
+
+function ControlIcon({ name }: { name: "gallery" | "capture" | "flip" }) {
+  const paths = {
+    gallery: "M3 5h18v14H3z M3 16l5-5 4 4 3-3 6 5 M16 9h.01",
+    capture: "M3 7h4l2-3h6l2 3h4v13H3z M15.5 13a3.5 3.5 0 1 1-7 0 3.5 3.5 0 1 1 7 0",
+    flip: "M5 10a7 7 0 0 1 12-4l2 2 M19 4v4h-4 M19 14a7 7 0 0 1-12 4l-2-2 M5 20v-4h4",
+  };
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d={paths[name]} /></svg>;
+}
 
 function useObjectUrl(blob: Blob | null) {
   const [entry, setEntry] = useState<{ blob: Blob; url: string } | null>(null);
@@ -38,10 +48,12 @@ export default function Home() {
   const [direction, setDirection] = useState<Direction>("environment");
   const [status, setStatus] = useState<"starting" | "ready" | "idle">("starting");
   const [frame, setFrame] = useState(0);
+  const [loadedFrame, setLoadedFrame] = useState<number | null>(null);
   const [photo, setPhoto] = useState<File | null>(null);
   const [result, setResult] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [permissionDismissed, setPermissionDismissed] = useState(false);
   const photoUrl = useObjectUrl(photo);
   const resultUrl = useObjectUrl(result);
 
@@ -58,6 +70,7 @@ export default function Home() {
     const ticket = request.current;
     cameraStatus.current = "starting";
     setStatus("starting");
+    setPermissionDismissed(false);
     setError("");
     try {
       if (!navigator.mediaDevices?.getUserMedia) {
@@ -222,26 +235,32 @@ export default function Home() {
   }
 
   const live = status === "ready" && !photo && !result;
+  const awaiting = !live && !photo && !result;
+  const frameReady = loadedFrame === frame;
+  const showPermission = awaiting && status === "idle" && Boolean(error) && !permissionDismissed;
   return (
     <main className="cameraPage">
       <header className="cameraHeader">
-        <img src="/crown.svg" alt="" width="46" height="39" />
-        <div><h1>O Reino da Princesa Lis</h1><p>28.11.2026 · LEVEL 1</p></div>
+        <img src="/royaume/crest.webp" alt="" width="48" height="38" />
+        <div><h1>O Reino da Princesa Lis</h1><p>28.11.2026 • LEVEL 1</p></div>
       </header>
-      <section className="viewfinder" aria-label="Enquadramento da foto">
+      <section className={"viewfinder" + (awaiting ? " awaiting" : "")} aria-label="Enquadramento da foto">
         <video ref={video} playsInline muted autoPlay hidden={!live}
           className={"feed" + (direction === "user" ? " mirror" : "")} />
         {photoUrl && !result && <img className="feed" src={photoUrl} alt="Enquadramento da foto escolhida" />}
         {resultUrl && <img className="feed" src={resultUrl} alt="Foto com moldura pronta" />}
-        {!result && <img className="liveFrame" src={frameUrl(frame)} alt="" />}
-        {!live && !photo && !result && (
-          <div className="placeholder">
-            <img src="/crown.svg" width="58" height="49" alt="" />
-            {status === "starting" ? <p role="status">Abrindo a câmera…</p> : <>
-              <button className="action main" onClick={() => start(lastDirection.current)}>Abrir câmera</button>
-              <button className="action" onClick={() => nativeCamera.current?.click()}>Usar câmera do celular</button>
-            </>}
-          </div>
+        {!result && <img key={frame} className="liveFrame" src={frameUrl(frame)} alt=""
+          ref={image => { if (image?.complete && image.naturalWidth) setLoadedFrame(frame); }}
+          onLoad={() => setLoadedFrame(frame)} />}
+        {awaiting && status === "starting" && <p className="opening" role="status">Abrindo a câmera…</p>}
+        {showPermission && (
+          <aside className="permission" aria-labelledby="permission-title">
+            <button className="close" aria-label="Fechar aviso" onClick={() => setPermissionDismissed(true)}>×</button>
+            <h2 id="permission-title">Acesso à câmera</h2>
+            <p role="status">{error}</p>
+            <button className="action main" disabled={busy} onClick={() => start(lastDirection.current)}>Abrir câmera</button>
+            <button className="native" disabled={busy} onClick={() => nativeCamera.current?.click()}>Usar câmera do celular</button>
+          </aside>
         )}
       </section>
       {!result && (
@@ -250,7 +269,8 @@ export default function Home() {
             {frames.map((name, index) => (
               <button key={name} aria-label={name} aria-pressed={index === frame}
                 disabled={busy} onClick={() => setFrame(index)}>
-                <img src={frameUrl(index)} alt="" />
+                <img src={"/royaume/thumb-" + (index + 1) + ".webp"} alt="" />
+                <span>{themeLabels[index]}</span>
               </button>
             ))}
           </div>
@@ -264,13 +284,15 @@ export default function Home() {
           {photo && <button className="action" onClick={() => { setError(""); setResult(null); }}>Trocar moldura</button>}
           <button className="action" onClick={reset}>Outra foto</button>
         </> : photo ? <>
-          <button className="action main" disabled={busy || !photoUrl} onClick={capture}>Usar esta foto</button>
+          <button className="action main" disabled={busy || !photoUrl || !frameReady} onClick={capture}>Usar esta foto</button>
           <button className="action" disabled={busy} onClick={reset}>Voltar à câmera</button>
         </> : <>
-          <button className="action side" disabled={busy} onClick={() => gallery.current?.click()}>Galeria</button>
-          <button className="shutter" disabled={!live || busy} onClick={capture} aria-label="Fotografar"><span /></button>
-          <button className="action side" disabled={!live || busy}
-            onClick={() => start(direction === "user" ? "environment" : "user", true)}>Virar</button>
+          <button className="action side" disabled={busy} onClick={() => gallery.current?.click()}><ControlIcon name="gallery" />Galeria</button>
+          <button className="shutter" disabled={!live || busy || !frameReady} onClick={capture} aria-label="Fotografar"><span><ControlIcon name="capture" /></span></button>
+          <button className="action side" disabled={status === "starting" || busy}
+            onClick={() => live ? start(direction === "user" ? "environment" : "user", true) : start(lastDirection.current)}>
+            <ControlIcon name={live ? "flip" : "capture"} />{live ? "Virar" : "Câmera"}
+          </button>
         </>}
       </div>
       <input ref={gallery} type="file" accept="image/*" hidden onChange={event => {
@@ -282,7 +304,7 @@ export default function Home() {
         event.target.value = "";
       }} />
       {busy && <p role="status" className="notice">Preparando a foto…</p>}
-      {error && <p role="status" className="notice">{error}</p>}
+      {error && !showPermission && (!awaiting || !permissionDismissed) && <p role="status" className="notice">{error}</p>}
       <p className="privacy">As fotos são processadas neste dispositivo.</p>
     </main>
   );

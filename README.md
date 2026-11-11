@@ -12,13 +12,15 @@ npm run typecheck
 npm run build
 ```
 
-Use localhost ou HTTPS para testar a câmera. O app abre com preferência pela câmera traseira. A prévia e a exportação usam corte central 3:4 e a mesma moldura SVG. A selfie é espelhada. A exportação PNG usa os pixels disponíveis nesse recorte, com limite de 3072 × 4096 para limitar o consumo de memória. A seleção de apps depende do menu de compartilhamento do sistema. Sem suporte ao compartilhamento de arquivos, o app baixa o PNG.
+Use localhost ou HTTPS para testar a câmera. O app abre com preferência pela câmera traseira. A prévia e a exportação usam corte central 3:4 e a mesma moldura WebP transparente. A selfie é espelhada. A exportação PNG usa os pixels disponíveis nesse recorte, com limite de 3072 × 4096 para limitar o consumo de memória. A seleção de apps depende do menu de compartilhamento do sistema. Sem suporte ao compartilhamento de arquivos, o app baixa o PNG.
 
 ## Direção de arte
 
-O convite tem céu ciano (~#53C5F1), rosa intenso (~#F7197E), amarelo-ouro (~#FFD421), verde-lima (~#9CDF31), creme (~#FFF2D0) e lilás (~#AB8CF2). A composição é vertical, com um painel claro central e objetos de plataforma nas margens. Blocos dourados emolduram a data e a hora. O castelo tem paredes de creme, torres com telhados rosas e bandeiras. A princesa usa vestido rosa, coroa dourada com joia rosa e uma varinha de estrela, emergindo de um cano verde. As formas têm contornos marcados, brilhos e sombras suaves. A referência tem acabamento digital 2D com sombreamento suave. As letras são pesadas, angulares nos títulos e arredondadas na faixa de abertura.
+O convite organiza castelo, bandeiras, cogumelos e moedas em torno de uma área central clara. A câmera usa a mesma lógica. O creme do papel (#fcf2e8), o branco quente (#fffaf3), o rosa antigo (#9c4969) e o dourado fosco (#d9b789) sustentam a interface. O lilás, o verde sálvia e o azul pálido entram nas ilustrações. A coroa com joia rosa acompanha a assinatura em serifada, com DM Sans nos controles e no subtítulo.
 
-As molduras transferem a ornamentação para os cantos, mantendo a região central livre para pessoas e grupos. A coroa e o letreiro dourado conectam o site e o cartão. O Jardim usa rosa, lilás e creme com lírios vetoriais. O tema da fase aparece em moedas, plataformas, blocos, cogumelos e na bandeira de chegada.
+As cinco composições têm ilustrações nas extremidades e centro transparente. Castelo, Cogumelos, Aventura, Jardim e Level 1 têm distribuição própria e um título sobre faixa pintada. A câmera e a exportação leem o mesmo WebP de 1800 × 2400. O seletor usa miniaturas de 174 × 132 com a ilustração principal de cada fase. O cartão de permissão só aparece após uma falha e pode ser fechado.
+
+As ilustrações partiram de um atlas original criado com ImageGen a partir do convite como referência. O prompt pediu 12 peças isoladas em fundo transparente, com aquarela e guache sobre papel, granulação suave e contornos terrosos. As peças foram coroa com joia rosa, castelo com torres e bandeiras, cogumelos rosa e lilás, moeda, bloco de interrogação, plataforma, lírios, bandeira de chegada, estrela sorridente, nuvens, cano verde e faixa rosa com friso dourado.
 
 ## Galeria privada
 

@@ -4,10 +4,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "O Reino da Princesa Lis",
   description: "Câmera do primeiro aniversário da Lis",
-  icons: { icon: "/crown.svg" },
+  icons: { icon: "/royaume/crest.webp" },
 };
 
-export const viewport: Viewport = { viewportFit: "cover", themeColor: "#b6ecff" };
+export const viewport: Viewport = { viewportFit: "cover", themeColor: "#fcf2e8" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="pt-BR"><body>{children}</body></html>;
