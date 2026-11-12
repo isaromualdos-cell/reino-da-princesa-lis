@@ -49,9 +49,11 @@ export default function RsvpForm() {
   if (status === "saved") {
     return (
       <div className="rsvpSuccess" role="status">
-        <span aria-hidden="true">✦</span>
-        <h3>{answer === "yes" ? "Presença confirmada!" : "Resposta recebida!"}</h3>
-        <p>{answer === "yes" ? "Até a festa da Lis!" : "Obrigada por avisar."}</p>
+        <span aria-hidden="true">{answer === "yes" ? "★" : "♥"}</span>
+        <h3>{answer === "yes" ? "Presença confirmada!" : "Poxa, que pena!"}</h3>
+        <p>{answer === "yes"
+          ? "Time pronto! A gente se vê no Reino da Lis."
+          : "A gente vai sentir sua falta no Reino da Lis. Tomara que a gente jogue junto na próxima aventura!"}</p>
       </div>
     );
   }
@@ -78,10 +80,11 @@ export default function RsvpForm() {
         )}
         {answer === "yes" && (
           <fieldset className="rsvpGuests">
-            <legend>Quem vai?</legend>
-            <p>Escreva o nome de cada pessoa que vai, incluindo você se for à festa.</p>
+            <legend>Quem está no seu time?</legend>
+            <p>Adicione cada pessoa que vai à festa, incluindo você.</p>
             {guests.map((guest, index) => (
               <div className="guestRow" key={guest.id}>
+                <span className="playerBadge">Player {index + 1}</span>
                 <label className="rsvpLabel">
                   Nome de quem vai
                   <input required maxLength={100} value={guest.name} onChange={(e) => updateGuest(guest.id, { name: e.target.value })} />
@@ -95,11 +98,11 @@ export default function RsvpForm() {
                   </select>
                 </label>
                 {guests.length > 1 && (
-                  <button className="removeGuest" type="button" aria-label={`Remover pessoa ${index + 1}`} onClick={() => setGuests((rows) => rows.filter((row) => row.id !== guest.id))}>×</button>
+                  <button className="removeGuest" type="button" aria-label={`Remover player ${index + 1}`} onClick={() => setGuests((rows) => rows.filter((row) => row.id !== guest.id))}>×</button>
                 )}
               </div>
             ))}
-            {guests.length < 25 && <button className="addGuest" type="button" onClick={addGuest}>+ Adicionar pessoa</button>}
+            {guests.length < 25 && <button className="addGuest" type="button" onClick={addGuest}>+ Adicionar player</button>}
           </fieldset>
         )}
       </fieldset>
