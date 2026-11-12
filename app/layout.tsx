@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "O Reino da Princesa Lis",
-  description: "Câmera do primeiro aniversário da Lis",
+  description: "Confirmação de presença e fotos do primeiro aniversário da Lis",
   icons: { icon: "/royaume/crest.webp" },
 };
 

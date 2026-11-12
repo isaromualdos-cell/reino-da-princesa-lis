@@ -1,6 +1,6 @@
 # O Reino da Princesa Lis
 
-Câmera do primeiro aniversário da Lis, em 28 de novembro de 2026. A página solicita acesso à câmera ao abrir e oferece importação da galeria e captura pelo aplicativo de câmera do celular.
+Site do primeiro aniversário da Lis, em 28 de novembro de 2026, com confirmação de presença e câmera com molduras no dia da festa.
 
 ## Desenvolvimento
 
@@ -29,3 +29,9 @@ Cada foto finalizada com moldura é enviada para a pasta `aniversario-lis/` do a
 O armazenamento deve estar conectado ao projeto com `BLOB_READ_WRITE_TOKEN`. O envio usa JPEG de até 4 MB, com resolução de até 1620 × 2160. O download continua sendo o PNG produzido pela câmera. Cada captura tem um identificador único, preservado ao tentar novamente um envio.
 
 A interface informa sobre o envio antes da captura e mostra se o álbum recebeu a foto. Em caso de falha, a pessoa pode repetir o envio ou baixar a própria cópia.
+
+## Confirmação de presença
+
+- `/`: formulário público. Cada família escreve os nomes das pessoas que vão, ou registra que não vai.
+- `/presencas`: painel privado, com senha configurada em `LIS_ADMIN_PASSWORD`. Use uma senha aleatória forte. Configure `LIS_RSVP_MODE=live` somente em produção. As respostas ficam no armazenamento privado de Blob, sob o prefixo `confirmacoes-lis/` em produção e `teste-confirmacoes-lis/` nos outros ambientes.
+- `/fotos`: câmera. A câmera e o envio são liberados a partir de 28/11/2026 às 16h de São Paulo.
