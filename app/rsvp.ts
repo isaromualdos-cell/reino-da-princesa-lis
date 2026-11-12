@@ -48,12 +48,16 @@ export async function saveRsvp(id: string, data: Omit<Rsvp, "submittedAt">) {
 }
 
 export async function listRsvps() {
+  const resetAt = Date.parse(process.env.LIS_RSVP_RESET_AT ?? "");
   let cursor: string | undefined;
   const responses: Rsvp[] = [];
   do {
     const page = await list({ prefix: storagePrefix(), limit: 100, cursor });
-    for (let index = 0; index < page.blobs.length; index += 12) {
-      const batch = page.blobs.slice(index, index + 12);
+    const blobs = Number.isFinite(resetAt)
+      ? page.blobs.filter((blob) => blob.uploadedAt.getTime() >= resetAt)
+      : page.blobs;
+    for (let index = 0; index < blobs.length; index += 12) {
+      const batch = blobs.slice(index, index + 12);
       const entries = await Promise.all(batch.map(async (blob) => {
         const result = await get(blob.url, { access: "private" });
         if (result?.statusCode !== 200) throw new Error("Missing RSVP");
@@ -63,5 +67,8 @@ export async function listRsvps() {
     }
     cursor = page.hasMore ? page.cursor : undefined;
   } while (cursor);
-  return responses.sort((a, b) => b.submittedAt.localeCompare(a.submittedAt));
+  const currentResponses = Number.isFinite(resetAt)
+    ? responses.filter((response) => Date.parse(response.submittedAt) >= resetAt)
+    : responses;
+  return currentResponses.sort((a, b) => b.submittedAt.localeCompare(a.submittedAt));
 }
