@@ -59,15 +59,24 @@ export default function RsvpForm() {
   return (
     <form className="rsvpForm" onSubmit={submit}>
       <fieldset className="formFields" disabled={status === "sending"}>
-        <label className="rsvpLabel">
-          Seu nome
-          <input required autoComplete="name" maxLength={100} value={respondent} onChange={(e) => setRespondent(e.target.value)} />
-        </label>
-        <fieldset className="rsvpChoice">
-          <legend>Vocês vão à festa?</legend>
-          <label><input required type="radio" name="presence" checked={answer === "yes"} onChange={() => setAnswer("yes")} /> Vamos sim!</label>
-          <label><input required type="radio" name="presence" checked={answer === "no"} onChange={() => setAnswer("no")} /> Não vamos conseguir ir</label>
+        <fieldset className="rsvpChoice" aria-label="Confirmação de presença">
+          <label>
+            <input required type="radio" name="presence" checked={answer === "yes"} onChange={() => setAnswer("yes")} />
+            <span className="choiceIcon" aria-hidden="true">✓</span>
+            <span>Vamos sim!</span>
+          </label>
+          <label>
+            <input required type="radio" name="presence" checked={answer === "no"} onChange={() => setAnswer("no")} />
+            <span className="choiceIcon" aria-hidden="true">–</span>
+            <span>Não vamos conseguir ir</span>
+          </label>
         </fieldset>
+        {answer && (
+          <label className="rsvpLabel">
+            Seu nome
+            <input required autoComplete="name" maxLength={100} value={respondent} onChange={(e) => setRespondent(e.target.value)} />
+          </label>
+        )}
         {answer === "yes" && (
           <fieldset className="rsvpGuests">
             <legend>Quem vai?</legend>
@@ -96,9 +105,11 @@ export default function RsvpForm() {
         )}
       </fieldset>
       {status === "error" && <p className="formError" role="alert">Não conseguimos enviar. Confira os nomes e tente de novo.</p>}
-      <button className="royalButton" disabled={status === "sending"} type="submit">
-        {status === "sending" ? "Enviando…" : "Enviar resposta"}
-      </button>
+      {answer && (
+        <button className="royalButton" disabled={status === "sending"} type="submit">
+          {status === "sending" ? "Enviando…" : "Enviar resposta"}
+        </button>
+      )}
     </form>
   );
 }

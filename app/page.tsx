@@ -14,8 +14,7 @@ export default function Home() {
         <header className="inviteHeader">
           <div className="inviteIdentity">
             <span className="inviteAge">1 aninho</span>
-            <h1 id="invite-title">Princesa Lis</h1>
-            <time dateTime="2026-11-28T16:00:00-03:00">28 de novembro · 16h</time>
+            <h1 id="invite-title">Princesa <strong>Lis</strong></h1>
           </div>
           <Image
             className="inviteCharacter"
@@ -24,17 +23,20 @@ export default function Home() {
             width={362}
             height={440}
             priority
-            sizes="(max-width: 480px) 118px, 190px"
+            sizes="(max-width: 700px) 126px, 180px"
           />
+          <time className="inviteDate" dateTime="2026-11-28T16:00:00-03:00">28 de novembro <span aria-hidden="true">·</span> 16h</time>
         </header>
-        <section className="inviteRsvp" aria-labelledby="rsvp-title">
-          <h2 id="rsvp-title">Confirme sua presença</h2>
-          <RsvpForm />
-        </section>
-        <footer className="royalFooter">
-          <Link href="/fotos">{cameraOpen ? "Abrir câmera da festa" : "Câmera da festa"}</Link>
-          {!cameraOpen && <span>Abre em 28/11, às 16h</span>}
-        </footer>
+        <div className="inviteResponse">
+          <section className="inviteRsvp" aria-labelledby="rsvp-title">
+            <h2 id="rsvp-title">Você vem à festa?</h2>
+            <RsvpForm />
+          </section>
+          <footer className="royalFooter">
+            <Link href="/fotos">{cameraOpen ? "Abrir câmera da festa" : "Câmera da festa"}</Link>
+            {!cameraOpen && <span>Abre em 28/11, às 16h</span>}
+          </footer>
+        </div>
       </article>
     </main>
   );
