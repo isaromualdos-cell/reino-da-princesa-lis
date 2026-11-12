@@ -32,6 +32,27 @@ export function parseRsvp(value: unknown): Omit<Rsvp, "submittedAt"> | null {
   return { respondent: name, attending, guests: validated };
 }
 
+function comparisonName(name: string) {
+  return name.trim().replace(/\s+/g, " ").normalize("NFD").replace(/\p{M}/gu, "").toLocaleLowerCase("pt-BR");
+}
+
+export function confirmedGuests(response: Rsvp): Guest[] {
+  if (!response.attending) return [];
+
+  const respondentName = comparisonName(response.respondent);
+  let includedRespondent = false;
+  const guests = response.guests.filter((guest) => {
+    if (comparisonName(guest.name) !== respondentName) return true;
+    if (includedRespondent) return false;
+    includedRespondent = true;
+    return true;
+  });
+  if (!includedRespondent) {
+    guests.unshift({ name: response.respondent, kind: "adulto" });
+  }
+  return guests;
+}
+
 function storagePrefix() {
   return process.env.LIS_RSVP_MODE === "live" ? prefix : testPrefix;
 }

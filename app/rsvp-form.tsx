@@ -7,8 +7,9 @@ type Row = { id: number; name: string; kind: GuestKind | "" };
 
 export default function RsvpForm() {
   const [respondent, setRespondent] = useState("");
+  const [respondentKind, setRespondentKind] = useState<GuestKind | "">("");
   const [answer, setAnswer] = useState<"yes" | "no" | null>(null);
-  const [guests, setGuests] = useState<Row[]>([{ id: 0, name: "", kind: "" }]);
+  const [guests, setGuests] = useState<Row[]>([]);
   const [status, setStatus] = useState<"idle" | "sending" | "saved" | "error">("idle");
   const nextRow = useRef(1);
   const lastRequest = useRef<{ id: string; body: string } | null>(null);
@@ -24,11 +25,13 @@ export default function RsvpForm() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!answer || status === "sending") return;
+    if (!answer || status === "sending" || (answer === "yes" && !respondentKind)) return;
     const body = JSON.stringify({
       respondent: respondent.trim(),
       attending: answer === "yes",
-      guests: answer === "yes" ? guests.map(({ name, kind }) => ({ name: name.trim(), kind })) : [],
+      guests: answer === "yes"
+        ? [{ name: respondent.trim(), kind: respondentKind }, ...guests.map(({ name, kind }) => ({ name: name.trim(), kind }))]
+        : [],
     });
     if (lastRequest.current?.body !== body) lastRequest.current = { id: crypto.randomUUID(), body };
     setStatus("sending");
@@ -73,18 +76,31 @@ export default function RsvpForm() {
           </label>
         </fieldset>
         {answer && (
-          <label className="rsvpLabel">
-            Seu nome
-            <input required autoComplete="name" maxLength={100} value={respondent} onChange={(e) => setRespondent(e.target.value)} />
-          </label>
+          <div className={answer === "yes" ? "guestRow" : undefined}>
+            {answer === "yes" && <span className="playerBadge">Player 1</span>}
+            <label className="rsvpLabel">
+              Seu nome
+              <input required autoComplete="name" maxLength={100} value={respondent} onChange={(e) => setRespondent(e.target.value)} />
+            </label>
+            {answer === "yes" && (
+              <label className="rsvpLabel">
+                Sua faixa etária
+                <select required value={respondentKind} onChange={(e) => setRespondentKind(e.target.value as Row["kind"])}>
+                  <option value="" disabled>Selecione</option>
+                  <option value="adulto">Adulto</option>
+                  <option value="crianca">Criança</option>
+                </select>
+              </label>
+            )}
+          </div>
         )}
         {answer === "yes" && (
           <fieldset className="rsvpGuests">
-            <legend>Quem está no seu time?</legend>
-            <p>Adicione cada pessoa que vai à festa, incluindo você.</p>
+            <legend>Mais alguém vai com você?</legend>
+            <p>Seu nome já entra na lista. Adicione quem vai com você.</p>
             {guests.map((guest, index) => (
               <div className="guestRow" key={guest.id}>
-                <span className="playerBadge">Player {index + 1}</span>
+                <span className="playerBadge">Player {index + 2}</span>
                 <label className="rsvpLabel">
                   Nome de quem vai
                   <input required maxLength={100} value={guest.name} onChange={(e) => updateGuest(guest.id, { name: e.target.value })} />
@@ -97,12 +113,10 @@ export default function RsvpForm() {
                     <option value="crianca">Criança</option>
                   </select>
                 </label>
-                {guests.length > 1 && (
-                  <button className="removeGuest" type="button" aria-label={`Remover player ${index + 1}`} onClick={() => setGuests((rows) => rows.filter((row) => row.id !== guest.id))}>×</button>
-                )}
+                <button className="removeGuest" type="button" aria-label={`Remover player ${index + 2}`} onClick={() => setGuests((rows) => rows.filter((row) => row.id !== guest.id))}>×</button>
               </div>
             ))}
-            {guests.length < 25 && <button className="addGuest" type="button" onClick={addGuest}>+ Adicionar player</button>}
+            {guests.length < 24 && <button className="addGuest" type="button" onClick={addGuest}>+ Adicionar player</button>}
           </fieldset>
         )}
       </fieldset>
