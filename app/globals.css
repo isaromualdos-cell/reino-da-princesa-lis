@@ -1,0 +1,415 @@
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/dm-sans-latin.woff2") format("woff2");
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+* { box-sizing: border-box; }
+:root {
+  color: #573544;
+  background: #f7eee6;
+  font-family: "DM Sans", system-ui, sans-serif;
+  --plum: #612d48;
+  --rose: #9c4969;
+  --paper: #fffaf5;
+  --gold-line: #c9a77a;
+}
+body {
+  min-width: 0;
+  min-height: 100dvh;
+  margin: 0;
+  background:
+    radial-gradient(ellipse 95% 34rem at 50% 0, #fffdf9 3%, transparent 100%),
+    radial-gradient(ellipse 95% 31rem at 100% 72%, #e8c6ca45, transparent 100%),
+    linear-gradient(145deg, #f6e6dc 0%, #faf3eb 49%, #eee0d2 100%);
+}
+button { font: inherit; }
+button:not(:disabled) { cursor: pointer; }
+button:disabled { opacity: .5; }
+button:focus-visible { outline: 2px solid #733650; outline-offset: 3px; }
+
+.cameraPage {
+  width: min(100%, 530px);
+  margin-inline: auto;
+  display: grid;
+  justify-items: center;
+  gap: 11px;
+  padding: max(12px, env(safe-area-inset-top)) max(13px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom)) max(13px, env(safe-area-inset-left));
+}
+.cameraHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  text-align: left;
+  width: min(100%, 465px);
+  margin: 0 0 2px;
+  padding: 0 0 9px;
+  border-bottom: 1px solid #b78c603c;
+}
+.cameraHeader img { width: 48px; height: 38px; object-fit: contain; }
+.cameraHeader h1 {
+  color: #713450;
+  font: 700 clamp(18px, 4.9vw, 26px)/1.06 Georgia, serif;
+  letter-spacing: -.045em;
+  margin: 0;
+}
+.cameraHeader p {
+  color: #795064;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .17em;
+  margin: 4px 0 0;
+}
+.viewfinder {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, clamp(220px, calc((100dvh - 221px) * .75), 465px));
+  aspect-ratio: 3 / 4;
+  border-radius: 23px;
+  overflow: hidden;
+  background: linear-gradient(152deg, #fff9f4, #f3e3e5);
+  outline: 1px solid #b9986f;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px #fffaf4b8, 0 10px 25px #673b3720;
+}
+.feed, .liveFrame { position: absolute; inset: 0; width: 100%; height: 100%; }
+.feed { object-fit: cover; }
+.mirror { transform: scaleX(-1); }
+.liveFrame { pointer-events: none; }
+.opening {
+  position: absolute;
+  top: 44%;
+  inset-inline: 0;
+  margin: 0 auto;
+  width: max-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--plum);
+  font-size: 12px;
+  font-weight: 750;
+}
+.permission {
+  position: absolute;
+  inset: auto 9% 23%;
+  padding: 13px 14px 11px;
+  background: var(--paper);
+  border: 1px solid var(--gold-line);
+  border-radius: 18px;
+  box-shadow: 0 8px 18px #75434b22;
+  text-align: center;
+}
+.permission h2 { margin: 0 17px; font: bold 17px/1.1 Georgia, serif; color: var(--plum); }
+.permission p { margin: 6px 0 9px; font-size: 12px; line-height: 1.35; }
+.permission .close {
+  position: absolute; right: 2px; top: 2px;
+  display: grid; place-items: center;
+  width: 37px; height: 37px; padding: 0;
+  border: 0; background: none; color: var(--plum); font-size: 19px;
+}
+.permission .native {
+  min-height: 40px; padding: 3px 5px; margin: 0 auto; display: block;
+  border: 0; background: none; color: #72374f; font-size: 11px;
+  font-weight: 750; text-decoration: underline; text-underline-offset: 3px;
+}
+.framePicker { width: min(100%, 458px); min-width: 0; text-align: center; }
+.frameChoices {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(58px, 1fr);
+  gap: 6px; padding: 4px; overflow-x: auto; scrollbar-width: thin;
+  scrollbar-color: #c98fa4 transparent;
+}
+.frameChoices button {
+  position: relative; min-width: 0; padding: 3px; overflow: hidden;
+  border: 1px solid #d8c1a9; border-radius: 12px;
+  background: #fffaf5; color: #644152;
+}
+.frameChoices button[aria-pressed="true"] {
+  border-color: #9e4c69; box-shadow: inset 0 0 0 1px #9e4c69;
+  background: #f8e2e9; color: #6c2f49;
+}
+.frameChoices img {
+  display: block; width: 100%; height: clamp(42px, 14vw, 73px);
+  object-fit: contain; background: #f5e9e2; border-radius: 8px;
+}
+.frameChoices span { display: block; font-weight: 800; font-size: clamp(8px, 2.35vw, 11px); line-height: 1.1; padding: 4px 0 2px; }
+.framePicker p { margin: 6px 0 0; font: bold 14px/1.15 Georgia, serif; color: var(--plum); }
+.cameraActions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.action {
+  min-height: 44px; padding: 6px 12px; border: 1px solid #cbb395; border-radius: 12px;
+  background: var(--paper); color: var(--plum); font-size: 12px; font-weight: 800; box-shadow: 0 2px 4px #75434b0c;
+}
+.action.main { background: linear-gradient(155deg, #874762, #622e49); border-color: #6a344e; color: #fffaf6; }
+.action.side { display: inline-flex; justify-content: center; align-items: center; gap: 5px; min-width: 78px; }
+.action svg, .shutter svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.shutter {
+  display: grid; place-items: center; width: 56px; height: 56px;
+  border-radius: 50%; background: #fff6e8; border: 1px solid #bb8c55; padding: 4px;
+  box-shadow: 0 2px 0 #d9b789;
+}
+.shutter span {
+  display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%;
+  color: #fff; background: #a64f71; border: 1px solid #8a3b59;
+}
+.shutter svg { width: 23px; height: 23px; }
+.notice, .privacy { margin: 0; text-align: center; font-size: 11px; }
+.notice { font-weight: 750; max-width: 34ch; }
+.privacy { color: #785c64; }
+
+@media (min-width: 720px) {
+  .cameraPage { gap: 12px; }
+}
+@media (max-height: 660px) {
+  .cameraPage { gap: 8px; }
+  .cameraHeader img { width: 40px; height: 32px; }
+  .frameChoices img { height: 47px; }
+}
+
+.royalPage, .cameraScene {
+  --royal-ink: #43203d;
+  --royal-wine: #a10c52;
+  min-height: 100dvh;
+  padding: 0 18px 38px;
+  color: var(--royal-ink);
+  background: radial-gradient(ellipse at 50% 0%, #f4fcff 0%, transparent 43rem),
+    linear-gradient(170deg, #75d6f5, #a3e2f7 75%, #dcf0c5);
+}
+.invitePage {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  padding: clamp(24px, 5vh, 62px) clamp(16px, 6vw, 100px) clamp(76px, 13vh, 142px);
+  background: #58c7f1;
+}
+.invitePage::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #58c7f1 url("/convite/reino-da-lis.webp") center bottom / cover no-repeat;
+}
+.invitePanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, .86fr);
+  align-items: end;
+  gap: clamp(25px, 5vw, 82px);
+  width: min(100%, 1060px);
+  margin: 0 auto;
+}
+.inviteHeader {
+  display: grid;
+  justify-items: center;
+  align-content: end;
+  gap: clamp(14px, 2.6vh, 30px);
+  padding-bottom: 2px;
+}
+.inviteIdentity {
+  display: grid;
+  justify-items: center;
+  max-width: 100%;
+  text-align: center;
+}
+.inviteIdentity h1 {
+  margin: 0;
+  color: #6a2546;
+  font: 900 clamp(.95rem, 2.3vw, 1.55rem)/1 "DM Sans", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .17em;
+  text-shadow: 0 1px 0 #fff8df, 0 0 4px #fff8df, 0 0 10px #fff8df;
+}
+.inviteWordmark {
+  display: block;
+  width: clamp(136px, 25vw, 282px);
+  height: auto;
+  margin: 4px auto 7px;
+  filter: drop-shadow(0 6px 0 #835b602e);
+}
+.inviteDetails {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px 9px;
+  padding: 5px 13px;
+  border: 2px solid #a65c1e;
+  border-radius: 9px;
+  background: #fff5ca;
+  box-shadow: 0 3px 0 #9a551e;
+}
+.inviteAge { color: #843f0a; font-weight: 900; }
+.inviteDate { color: #663049; font-size: .82rem; font-weight: 850; }
+.inviteCharacter {
+  display: block;
+  width: clamp(151px, 21vw, 270px);
+  height: auto;
+  filter: drop-shadow(0 2px 0 #fff9e8) drop-shadow(0 7px 0 #663f2d50);
+}
+.inviteResponse {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: clamp(5px, 2vh, 22px);
+  border: 3px solid #864312;
+  border-radius: 18px;
+  background: #fffae9;
+  box-shadow: 0 0 0 3px #ffd95a, 0 10px 0 2px #75370e, 0 21px 27px #74420b55;
+}
+.inviteRsvp { padding: 22px clamp(16px, 3.5vw, 32px) 23px; }
+.inviteRsvp h2 {
+  margin: -22px calc(-1 * clamp(16px, 3.5vw, 32px)) 20px;
+  padding: 14px 12px;
+  border-radius: 14px 14px 0 0;
+  border-bottom: 2px solid #9b5114;
+  background:
+    radial-gradient(circle at 13px 13px, #fff4ac 0 2px, #bb7419 3px 4px, transparent 5px),
+    radial-gradient(circle at calc(100% - 13px) 13px, #fff4ac 0 2px, #bb7419 3px 4px, transparent 5px),
+    linear-gradient(#ffea82, #ffc739);
+  color: #68320c;
+  font-size: clamp(1.45rem, 3.4vw, 2.15rem);
+  line-height: 1.06;
+  font-weight: 900;
+  letter-spacing: -.047em;
+  text-align: center;
+}
+.inviteResponse .royalFooter {
+  justify-content: center;
+  margin: 0;
+  padding: 12px 10px 14px;
+  border-radius: 0 0 14px 14px;
+  background: #fff0cf;
+  border-top: 1px solid #ead2a5;
+}
+.royalKicker { margin: 0; font-weight: 850; font-size: .69rem; letter-spacing: .19em; color: #a10c52; }
+.royalCard {
+  position: relative;
+  width: min(100%, 620px);
+  margin-inline: auto;
+  border: 2px solid #dfa029;
+  border-radius: 24px;
+  padding: clamp(23px, 5.3vw, 43px);
+  background: #fffaf1;
+  box-shadow: 0 0 0 4px #fff5ca, 0 13px 30px #326e922a;
+}
+.royalCard h1, .royalCard h2 { margin: 0; color: var(--royal-ink); font: 900 clamp(1.5rem, 4.5vw, 2.3rem)/1.05 "DM Sans", sans-serif; letter-spacing: -.045em; }
+.rsvpForm { display: grid; gap: 17px; }
+.rsvpForm fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.formFields { display: grid; gap: 16px; }
+.rsvpLabel { display: grid; min-width: 0; gap: 5px; font-size: .88rem; font-weight: 750; }
+.rsvpLabel input, .rsvpLabel select {
+  min-height: 45px; width: 100%; border: 1px solid #c995b0; border-radius: 9px;
+  padding: 8px 11px; color: var(--royal-ink); background: #fffdfa; font: inherit; font-size: 1rem;
+}
+.royalPage :is(a, button, input, select):focus-visible { outline: 2px solid #912d64; outline-offset: 3px; }
+.rsvpGuests legend { margin-bottom: 7px; padding: 0; font-size: .88rem; font-weight: 800; }
+.rsvpChoice {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 11px;
+}
+.rsvpChoice label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 57px;
+  padding: 9px 12px;
+  border: 2px solid #aa5d0d;
+  border-radius: 10px;
+  background: linear-gradient(#f52580, #c50c63);
+  border-color: #930c4a;
+  box-shadow: inset 0 0 0 1px #fa8cb6, 0 3px 0 #870b46;
+  color: #fff;
+  text-align: center;
+  font-size: .96rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+.rsvpChoice label + label {
+  border-color: #b65f82;
+  background: #fbe8ef;
+  box-shadow: inset 0 0 0 2px #fff7fa, 0 3px 0 #a24e70;
+  color: #74274e;
+}
+.rsvpChoice label:hover { filter: brightness(1.035); }
+.rsvpChoice label:has(input:checked) {
+  outline: 2px solid #87214a;
+  outline-offset: 3px;
+}
+.rsvpChoice label:has(input:focus-visible) { outline: 2px dashed #87214a; outline-offset: 4px; }
+.rsvpChoice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.choiceIcon { color: #ffe47a; font-size: 1.15rem; }
+.rsvpGuests p { font-size: .86rem; margin: 0 0 9px; }
+.guestRow { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(102px, 1fr) auto; gap: 7px; align-items: end; margin-bottom: 12px; }
+.playerBadge {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 3px 9px;
+  border: 1px solid #b87623;
+  border-radius: 5px;
+  background: #ffe387;
+  color: #713a13;
+  font-size: .76rem;
+  font-weight: 900;
+}
+.removeGuest { border: 0; padding: 0 4px; min-height: 45px; background: transparent; color: var(--royal-wine); font-size: 1.35rem; }
+.addGuest {
+  border: 1px solid #bd92ab; background: #f8e8ed; color: var(--royal-wine); padding: 8px 12px;
+  min-height: 42px; border-radius: 8px; font-weight: 750;
+}
+.royalButton {
+  display: block; text-align: center; min-height: 46px; padding: 11px 18px; border: 2px solid #a10c52;
+  border-radius: 10px; background: linear-gradient(#ef2383, #c50c63); color: #fff;
+  box-shadow: 0 3px 0 #8b0a44; text-decoration: none; font: 800 .95rem/1.5 "DM Sans", sans-serif;
+}
+.royalButton:not(:disabled):hover { background: #a90f57; }
+.royalFooter { display: flex; flex-wrap: wrap; gap: 6px 13px; justify-content: center; margin: 28px auto 0; font-size: .84rem; }
+.royalFooter a { color: var(--royal-wine); font-weight: 850; text-underline-offset: 3px; }
+.formError { margin: 0; color: #99273c; font-size: .9rem; }
+.rsvpSuccess { text-align: center; margin: 28px 0 10px; }
+.rsvpSuccess span { color: #a2682a; font-size: 2rem; }
+.rsvpSuccess h3 { margin: 4px 0; font-size: 1.55rem; font-weight: 900; }
+.rsvpSuccess p { margin: 8px 0; }
+.gatePage, .dashboardPage { padding-top: clamp(34px, 8vh, 85px); }
+.gateCard { text-align: center; max-width: 500px; }
+.gateCard img { object-fit: contain; margin-bottom: 11px; }
+.gateCard h1, .dashboardHeader h1 { margin-top: 8px; }
+.gateCard p:not(.royalKicker) { line-height: 1.6; }
+.gateCard form { text-align: left; margin-top: 20px; }
+.dashboardCard { max-width: 770px; }
+.dashboardHeader { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.rsvpTotals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 24px 0; }
+.rsvpTotals div { background: #f7e7eb; padding: 10px 8px; border-radius: 9px; text-align: center; }
+.rsvpTotals dt { font-size: .81rem; font-weight: 750; }
+.rsvpTotals dd { margin: 4px 0 0; font: bold 1.65rem Georgia, serif; }
+.responseList { display: grid; gap: 12px; }
+.responseList article { border: 1px solid #dcb8c4; padding: 13px; border-radius: 9px; overflow-wrap: anywhere; }
+.responseList h2 { font-size: 1.2rem; }
+.responseList p, .responseList ul { margin: 8px 0 0; }
+.responseList ul { padding-left: 18px; }
+.responseList li span { font-size: .82rem; color: #754b69; }
+
+.cameraScene { padding: 0; }
+.cameraScene .cameraHeader h1 { color: #a10c52; }
+.cameraScene .viewfinder { outline-color: #ad6c11; box-shadow: 0 0 0 5px #fff0a6, 0 10px 25px #27618333; }
+
+@media (max-width: 680px) {
+  .invitePage { padding: 17px 15px 65px; }
+  .invitePage::before { background-position: 26% bottom; }
+  .invitePanel { display: block; max-width: 440px; }
+  .inviteHeader {
+    grid-template-columns: minmax(0, 1fr) minmax(82px, .62fr);
+    align-items: end;
+    gap: 5px;
+    margin: 0 0 17px;
+  }
+  .inviteIdentity { align-self: center; }
+  .inviteWordmark { width: clamp(108px, 36vw, 168px); }
+  .inviteDetails { padding-inline: 5px; gap: 2px 6px; }
+  .inviteAge { font-size: .84rem; }
+  .inviteDate { font-size: .72rem; }
+  .inviteCharacter { width: min(100%, 117px); }
+  .rsvpChoice label { min-height: 47px; }
+}
