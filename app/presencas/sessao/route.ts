@@ -1,8 +1,9 @@
+import { isSameOrigin } from "../../request-origin";
 import { NextResponse } from "next/server";
 import { cookieName, sessionSeconds, startSession } from "../session";
 
 export async function POST(request: Request) {
-  if (request.headers.get("origin") !== new URL(request.url).origin) {
+  if (!isSameOrigin(request)) {
     return new Response(null, { status: 403 });
   }
   if (Number(request.headers.get("content-length")) > 2048) return new Response(null, { status: 413 });

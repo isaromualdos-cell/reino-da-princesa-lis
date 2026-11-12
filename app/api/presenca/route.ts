@@ -1,7 +1,8 @@
+import { isSameOrigin } from "../../request-origin";
 import { parseRsvp, saveRsvp, validRsvpId } from "../../rsvp";
 
 export async function POST(request: Request) {
-  if (request.headers.get("origin") !== new URL(request.url).origin) {
+  if (!isSameOrigin(request)) {
     return new Response(null, { status: 403 });
   }
   const id = request.headers.get("x-rsvp-id") ?? "";

@@ -1,3 +1,4 @@
+import { isSameOrigin } from "../../request-origin";
 import { head, put } from "@vercel/blob";
 import sharp from "sharp";
 import { cameraIsOpen } from "../../festa";
@@ -8,8 +9,7 @@ const photoIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-
 export async function POST(request: Request) {
   if (!cameraIsOpen()) return new Response(null, { status: 403 });
 
-  const origin = request.headers.get("origin");
-  if (!origin || origin !== new URL(request.url).origin) {
+  if (!isSameOrigin(request)) {
     return new Response(null, { status: 403 });
   }
 
