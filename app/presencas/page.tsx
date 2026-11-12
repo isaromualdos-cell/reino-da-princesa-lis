@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { confirmedGuests, listRsvps, type Rsvp } from "../rsvp";
+import { dashboardResponses, listRsvps, type Rsvp } from "../rsvp";
 import { cookieName, validSession } from "./session";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +26,7 @@ export default async function AttendancePage({ searchParams }: { searchParams: P
 
   let responses: Rsvp[] | null = null;
   try {
-    responses = (await listRsvps()).map((response) => ({ ...response, guests: confirmedGuests(response) }));
+    responses = dashboardResponses(await listRsvps());
   } catch {
     // A failed fetch is shown separately from an empty guest list.
   }

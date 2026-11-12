@@ -53,6 +53,22 @@ export function confirmedGuests(response: Rsvp): Guest[] {
   return guests;
 }
 
+export function dashboardResponses(responses: Rsvp[]): Rsvp[] {
+  const entries = responses.map((response) => ({ ...response, guests: confirmedGuests(response) }));
+  // Apply the correction to the RSVPs that existed when it was requested.
+  const existingEntries = entries.filter((entry) => entry.submittedAt < "2026-11-12T20:32:19.000Z");
+  const andressa = existingEntries.find((entry) => comparisonName(entry.respondent).split(" ")[0] === "andressa" &&
+    entry.guests.some((guest) => comparisonName(guest.name) === "renato"));
+  if (!andressa) return entries;
+
+  const duplicateIndex = andressa.guests.findIndex((guest) => comparisonName(guest.name) === "renato");
+  const duplicate = andressa.guests[duplicateIndex];
+  const otherMatches = existingEntries.flatMap((entry) => entry.guests.filter((_, index) => entry !== andressa || index !== duplicateIndex))
+    .filter((guest) => guest.kind === duplicate.kind && comparisonName(guest.name).split(" ")[0] === "renato");
+  if (otherMatches.length === 1) andressa.guests.splice(duplicateIndex, 1);
+  return entries;
+}
+
 function storagePrefix() {
   return process.env.LIS_RSVP_MODE === "live" ? prefix : testPrefix;
 }
