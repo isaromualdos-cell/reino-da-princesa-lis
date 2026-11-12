@@ -13,8 +13,14 @@ export default function Home() {
       <article className="invitePanel" aria-labelledby="invite-title">
         <header className="inviteHeader">
           <div className="inviteIdentity">
-            <span className="inviteAge">1 aninho</span>
-            <h1 id="invite-title">Princesa <strong>Lis</strong></h1>
+            <h1 id="invite-title">
+              Princesa
+              <Image className="inviteWordmark" src="/convite/letreiro-lis.webp" alt="Lis" width={361} height={191} priority />
+            </h1>
+            <div className="inviteDetails">
+              <span className="inviteAge">1 aninho</span>
+              <time className="inviteDate" dateTime="2026-11-28T16:00:00-03:00">28 de novembro · 16h</time>
+            </div>
           </div>
           <Image
             className="inviteCharacter"
@@ -23,9 +29,8 @@ export default function Home() {
             width={362}
             height={440}
             priority
-            sizes="(max-width: 700px) 126px, 180px"
+            sizes="(max-width: 600px) 115px, 160px"
           />
-          <time className="inviteDate" dateTime="2026-11-28T16:00:00-03:00">28 de novembro <span aria-hidden="true">·</span> 16h</time>
         </header>
         <div className="inviteResponse">
           <section className="inviteRsvp" aria-labelledby="rsvp-title">

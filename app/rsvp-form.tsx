@@ -62,12 +62,11 @@ export default function RsvpForm() {
         <fieldset className="rsvpChoice" aria-label="Confirmação de presença">
           <label>
             <input required type="radio" name="presence" checked={answer === "yes"} onChange={() => setAnswer("yes")} />
-            <span className="choiceIcon" aria-hidden="true">✓</span>
+            <span className="choiceIcon" aria-hidden="true">★</span>
             <span>Vamos sim!</span>
           </label>
           <label>
             <input required type="radio" name="presence" checked={answer === "no"} onChange={() => setAnswer("no")} />
-            <span className="choiceIcon" aria-hidden="true">–</span>
             <span>Não vamos conseguir ir</span>
           </label>
         </fieldset>
