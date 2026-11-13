@@ -53,8 +53,25 @@ export function confirmedGuests(response: Rsvp): Guest[] {
   return guests;
 }
 
+function splitVilmaAndJoao(guests: Guest[]): Guest[] {
+  const names = new Set(guests.map((guest) => comparisonName(guest.name)));
+  return guests.flatMap((guest) => {
+    const name = comparisonName(guest.name);
+    if (name !== "vilma e joao" && name !== "joao e vilma") return [guest];
+
+    const separated: Guest[] = [];
+    for (const adult of ["Vilma", "João"]) {
+      const key = comparisonName(adult);
+      if (names.has(key)) continue;
+      separated.push({ name: adult, kind: "adulto" });
+      names.add(key);
+    }
+    return separated;
+  });
+}
+
 export function dashboardResponses(responses: Rsvp[]): Rsvp[] {
-  const entries = responses.map((response) => ({ ...response, guests: confirmedGuests(response) }));
+  const entries = responses.map((response) => ({ ...response, guests: splitVilmaAndJoao(confirmedGuests(response)) }));
   // Apply the correction to the RSVPs that existed when it was requested.
   const existingEntries = entries.filter((entry) => entry.submittedAt < "2026-11-12T20:32:19.000Z");
   const andressa = existingEntries.find((entry) => comparisonName(entry.respondent).split(" ")[0] === "andressa" &&
