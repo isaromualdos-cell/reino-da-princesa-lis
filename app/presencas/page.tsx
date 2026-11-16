@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import { dashboardResponses, listRsvps, type Rsvp } from "../rsvp";
+import CopyConfirmations from "./copy-confirmations";
+import { confirmationText } from "./confirmation-text";
 import { cookieName, validSession } from "./session";
 
 export const dynamic = "force-dynamic";
@@ -32,7 +34,8 @@ export default async function AttendancePage({ searchParams }: { searchParams: P
   }
 
   const guests = responses?.flatMap((response) => response.guests) ?? [];
-  const adults = guests.filter((guest) => guest.kind === "adulto").length;
+  const adults = guests.filter((guest) => guest.kind === "adulto");
+  const children = guests.filter((guest) => guest.kind === "crianca");
   const declines = responses?.filter((response) => !response.attending).length ?? 0;
 
   return (
@@ -47,10 +50,11 @@ export default async function AttendancePage({ searchParams }: { searchParams: P
         {responses === null ? <p role="alert">Não foi possível carregar as respostas. Atualize a página para tentar de novo.</p> : (
           <>
             <dl className="rsvpTotals">
-              <div><dt>Adultos confirmados</dt><dd>{adults}</dd></div>
-              <div><dt>Crianças confirmadas</dt><dd>{guests.length - adults}</dd></div>
+              <div><dt>Adultos confirmados</dt><dd>{adults.length}</dd></div>
+              <div><dt>Crianças confirmadas</dt><dd>{children.length}</dd></div>
               <div><dt>Respostas de ausência</dt><dd>{declines}</dd></div>
             </dl>
+            {guests.length > 0 && <CopyConfirmations value={confirmationText(adults, children)} />}
             {responses.length === 0 && <p>Ainda não chegou nenhuma resposta.</p>}
             <div className="responseList">
               {responses.map((response, index) => (

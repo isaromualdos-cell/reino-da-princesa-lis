@@ -384,6 +384,12 @@ button:focus-visible { outline: 2px solid #733650; outline-offset: 3px; }
 .rsvpTotals div { background: #f7e7eb; padding: 10px 8px; border-radius: 9px; text-align: center; }
 .rsvpTotals dt { font-size: .81rem; font-weight: 750; }
 .rsvpTotals dd { margin: 4px 0 0; font: bold 1.65rem Georgia, serif; }
+.copyConfirmations { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 16px; }
+.copyConfirmations span { font-size: .86rem; }
+.copyConfirmations textarea {
+  flex: 0 0 100%; min-width: 0; padding: 9px; font: inherit; color: inherit;
+  background: #fffdfa; border: 1px solid #bd92ab; border-radius: 8px; resize: vertical;
+}
 .responseList { display: grid; gap: 12px; }
 .responseList article { border: 1px solid #dcb8c4; padding: 13px; border-radius: 9px; overflow-wrap: anywhere; }
 .responseList h2 { font-size: 1.2rem; }
