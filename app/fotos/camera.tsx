@@ -13,7 +13,7 @@ const frames = [
   { name: "Fase da estrela", label: "Estrela", slug: "4" },
   { name: "Minimalista", label: "Minimal", slug: "5" },
 ];
-const frameUrl = (index: number) => "/api/molduras/" + frames[index].slug + "?v=2";
+const frameUrl = (index: number) => "/api/molduras/" + frames[index].slug + "?v=3";
 
 function ControlIcon({ name }: { name: "gallery" | "capture" | "flip" }) {
   const paths = {
@@ -290,7 +290,7 @@ export default function Home() {
             {frames.map(({ name, label, slug }, index) => (
               <button key={name} aria-label={name} aria-pressed={index === frame}
                 disabled={busy} onClick={() => setFrame(index)}>
-                <img src={"/api/molduras/" + slug + "?v=2"} alt="" />
+                <img src={"/api/molduras/" + slug + "?v=3"} alt="" />
                 <span>{label}</span>
               </button>
             ))}
