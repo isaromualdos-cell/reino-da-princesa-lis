@@ -5,11 +5,11 @@ export const dynamic = "force-dynamic";
 
 const base = "https://b082b853-746d-4e81-87ac-a1bbfa1caaca.sandbox.floot.app";
 const images: Record<string,string> = {
-  "1": "5161df54-81e8-4504-90ab-3276f4b954c6-lis-nova-moldura-1.png",
-  "2": "a7f495b1-095e-4493-bd6c-7e803780f32e-lis-nova-moldura-2.png",
-  "3": "afaacc44-be49-443b-86f0-23ca950717a8-lis-nova-moldura-3.png",
-  "4": "b0e638e0-4cc0-46ab-ba4d-c7a585acf400-lis-nova-moldura-4.png",
-  "5": "ce721c71-de24-4d21-aed7-6db74c40be6f-lis-nova-moldura-5.png",
+  "1": "2f66bbb8-def2-451e-b1d6-e4e7090d946e-lis-moldura-ajustada-1.png",
+  "2": "c253dda3-de0c-4b6c-8271-2b98acbbaa65-lis-moldura-ajustada-2.png",
+  "3": "6fcf20d2-8df0-42b3-aceb-f193fea65efc-lis-moldura-ajustada-3.png",
+  "4": "32260166-b022-4f7d-ab7f-0cd2f7b737df-lis-moldura-ajustada-4.png",
+  "5": "142467f4-8229-4b1e-a248-090f88ae3b2a-lis-moldura-ajustada-5.png",
 };
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
