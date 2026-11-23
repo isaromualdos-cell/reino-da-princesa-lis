@@ -7,15 +7,13 @@ import { compose, loadImage, prepareAlbumPhoto } from "../photo";
 
 type Direction = "user" | "environment";
 const frames = [
-  { name: "Lis Clássica", label: "Clássica", slug: "01-lis-classica" },
-  { name: "Fase da Lis", label: "Fase da Lis", slug: "02-fase-da-lis" },
-  { name: "Jardim dos Cogumelos", label: "Jardim", slug: "03-jardim-dos-cogumelos" },
-  { name: "Caminho das Moedas", label: "Moedas", slug: "04-caminho-das-moedas" },
-  { name: "Chegada ao Castelo", label: "Castelo", slug: "05-chegada-ao-castelo" },
-  { name: "Lis Letreiro", label: "Letreiro", slug: "06-lis-letreiro" },
-  { name: "Lis Essencial", label: "Essencial", slug: "07-lis-essencial" },
+  { name: "Nas nuvens", label: "Nuvens", slug: "1" },
+  { name: "Fase concluída", label: "Level 1", slug: "2" },
+  { name: "Lis no cano", label: "Cano", slug: "3" },
+  { name: "Fase da estrela", label: "Estrela", slug: "4" },
+  { name: "Minimalista", label: "Minimal", slug: "5" },
 ];
-const frameUrl = (index: number) => "/molduras/" + frames[index].slug + ".png";
+const frameUrl = (index: number) => "/api/molduras/" + frames[index].slug;
 
 function ControlIcon({ name }: { name: "gallery" | "capture" | "flip" }) {
   const paths = {
@@ -292,7 +290,7 @@ export default function Home() {
             {frames.map(({ name, label, slug }, index) => (
               <button key={name} aria-label={name} aria-pressed={index === frame}
                 disabled={busy} onClick={() => setFrame(index)}>
-                <img src={"/molduras/" + slug + "-mini.webp"} alt="" />
+                <img src={"/api/molduras/" + slug} alt="" />
                 <span>{label}</span>
               </button>
             ))}
