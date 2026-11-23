@@ -5,11 +5,11 @@ export const dynamic = "force-dynamic";
 
 const base = "https://b082b853-746d-4e81-87ac-a1bbfa1caaca.sandbox.floot.app";
 const images: Record<string,string> = {
-  "1": "7dc84888-afba-4868-9c33-0e06924815f8-lis-moldura-1.png",
-  "2": "824d5157-56fc-45db-8fc9-64d54a2eb554-lis-moldura-2.png",
-  "3": "d46db8a2-75af-4caf-80ec-815fb10cf719-lis-moldura-3.png",
-  "4": "962b02d0-59a5-4fb8-b887-b49a17784010-lis-moldura-4.png",
-  "5": "1cad95fd-8f92-4c5a-a165-1dbc94f090d3-lis-moldura-5.png",
+  "1": "5161df54-81e8-4504-90ab-3276f4b954c6-lis-nova-moldura-1.png",
+  "2": "a7f495b1-095e-4493-bd6c-7e803780f32e-lis-nova-moldura-2.png",
+  "3": "afaacc44-be49-443b-86f0-23ca950717a8-lis-nova-moldura-3.png",
+  "4": "b0e638e0-4cc0-46ab-ba4d-c7a585acf400-lis-nova-moldura-4.png",
+  "5": "ce721c71-de24-4d21-aed7-6db74c40be6f-lis-nova-moldura-5.png",
 };
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
