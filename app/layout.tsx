@@ -1,0 +1,14 @@
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "O Reino da Princesa Lis",
+  description: "Confirmação de presença e fotos do primeiro aniversário da Lis",
+  icons: { icon: "/royaume/crest.webp" },
+};
+
+export const viewport: Viewport = { viewportFit: "cover", themeColor: "#75d6f5" };
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="pt-BR"><body>{children}</body></html>;
+}

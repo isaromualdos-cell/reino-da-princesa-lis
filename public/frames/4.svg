@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <defs>
+    <symbol id="star" viewBox="0 -12 100 112" overflow="visible">
+      <g stroke="#6f391e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path fill="#ffda30" d="m50 5 15 28 31 6-22 24 4 31-28-15-29 15 5-31L4 39l31-6Z" />
+        <path stroke="#693510" d="M43 43v14m14-14v14" />
+      </g>
+    </symbol>
+    <symbol id="mush" viewBox="0 -12 100 112" overflow="visible">
+      <g stroke="#6f391e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path fill="#ffebc5" d="M33 57h34l7 31q-24 13-48 0Z" />
+        <path fill="#fa4b79" d="M6 59a44 44 0 0 1 88 0Q50 79 6 59Z" />
+        <circle fill="#fff7fa" stroke="none" cx="51" cy="35" r="15" />
+        <circle fill="#fff7fa" stroke="none" cx="21" cy="53" r="8" />
+        <circle fill="#fff7fa" stroke="none" cx="79" cy="53" r="8" />
+      </g>
+    </symbol>
+    <symbol id="lily" viewBox="0 -12 100 112" overflow="visible">
+      <g stroke="#6f391e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path fill="#83bc58" stroke="#54783c" d="M51 93V38m0 43q-21-29-41-21 9 24 41 21Zm0 0q16-26 38-23-9 25-38 23Z" />
+        <path fill="#ffd4e8" stroke="#be6495" d="M50 53Q14 54 10 21l24 7L50 5l16 23 24-7Q86 54 50 53Z" />
+        <path stroke="#d988a8" d="m50 45-13-17m13 17 13-17" />
+      </g>
+    </symbol>
+  </defs>
+  <rect x="4" y="4" width="592" height="792" rx="33" fill="none" stroke="#e5a9dc" stroke-width="8" />
+  <rect x="12" y="12" width="576" height="776" rx="28" fill="none" stroke="#fff0ba" stroke-width="2" />
+  <use href="#lily" x="1" y="14" width="94" height="105.28000000000002" />
+  <use href="#lily" x="520" y="17" width="78" height="87.36000000000001" />
+  <use href="#star" x="105" y="51" width="34" height="38.080000000000005" />
+  <use href="#star" x="487" y="65" width="32" height="35.84" />
+  <use href="#lily" x="2" y="668" width="126" height="141.12" />
+  <use href="#lily" x="70" y="701" width="90" height="100.80000000000001" />
+  <use href="#mush" x="93" y="738" width="62" height="69.44000000000001" />
+  <use href="#lily" x="468" y="672" width="126" height="141.12" />
+  <use href="#mush" x="442" y="742" width="68" height="76.16000000000001" />
+  <rect x="146" y="744" width="308" height="43" rx="14" fill="#fff0f6" stroke="#a95016" stroke-width="4" />
+  <text x="300" y="771" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="18" letter-spacing="1" fill="#692a46">JARDIM ENCANTADO</text>
+</svg>

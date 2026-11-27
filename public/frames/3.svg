@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <defs>
+    <symbol id="star" viewBox="0 -12 100 112" overflow="visible">
+      <g stroke="#6f391e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path fill="#ffda30" d="m50 5 15 28 31 6-22 24 4 31-28-15-29 15 5-31L4 39l31-6Z" />
+        <path stroke="#693510" d="M43 43v14m14-14v14" />
+      </g>
+    </symbol>
+    <symbol id="coin" viewBox="0 -12 100 112" overflow="visible">
+      <g stroke="#6f391e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <ellipse fill="#ffbf14" cx="50" cy="50" rx="37" ry="45" />
+        <ellipse fill="#ffdd46" stroke="#ed9312" cx="50" cy="50" rx="25" ry="34" />
+        <path stroke="#ea9614" stroke-width="9" d="M50 33v34" />
+      </g>
+    </symbol>
+    <symbol id="cloud" viewBox="0 -12 100 112" overflow="visible">
+      <g stroke="#6f391e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path fill="#f7fcff" stroke="#176892" d="M17 74C-1 74 0 51 17 47c-2-18 20-25 32-14 11-22 40-12 39 8 19 1 17 33 2 33Z" />
+        <path fill="#c5edfc" stroke="none" d="M8 61c12 9 30 10 40 0 10 9 25 10 41-2l8-2c-1 9-4 13-10 14H17Z" />
+      </g>
+    </symbol>
+    <symbol id="castle" viewBox="0 -12 100 112" overflow="visible">
+      <g stroke="#6f391e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path fill="#fff0cd" d="M5 94V49h24V30h42v19h24v45Z" />
+        <path fill="#fb74a7" d="m1 50 16-23 17 23Zm24-19L50 4l25 27Zm41 19 17-23 16 23Z" />
+        <path fill="#e99846" d="M41 94V76a9 9 0 0 1 18 0v18Z" />
+        <path stroke="#ac724d" d="M17 61v10m33-29v10m33 9v10" />
+        <path fill="#ff3488" d="M50 4v-14l19 5-19 5Z" />
+      </g>
+    </symbol>
+    <symbol id="land" viewBox="0 -12 100 112" overflow="visible">
+      <g stroke="#6f391e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path fill="#ef963a" d="M4 39h92v32L73 91H27L4 71Z" />
+        <path fill="#94db29" d="M10 24h80c17 0 13 26 0 28-9 9-18 8-26 1-9 8-18 8-27 0-9 8-18 8-27-1-13-2-17-28 0-28Z" />
+      </g>
+    </symbol>
+    <symbol id="flag" viewBox="0 -12 100 112" overflow="visible">
+      <g stroke="#6f391e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <path fill="#ffe253" d="M26 15h6v75h-6Z" />
+        <path fill="#fa5699" d="M32 18c22-15 38 10 58 4l-8 15 7 12c-22 10-36-14-57-1Z" />
+        <circle fill="#ffdc31" cx="29" cy="11" r="8" />
+      </g>
+    </symbol>
+  </defs>
+  <rect x="4" y="4" width="592" height="792" rx="33" fill="none" stroke="#60c9f1" stroke-width="8" />
+  <rect x="12" y="12" width="576" height="776" rx="28" fill="none" stroke="#fff0ba" stroke-width="2" />
+  <use href="#flag" x="530" y="640" width="63" height="70.56" />
+  <use href="#cloud" x="-25" y="0" width="123" height="137.76000000000002" />
+  <use href="#castle" x="467" y="12" width="109" height="122.08000000000001" />
+  <use href="#star" x="51" y="76" width="51" height="57.120000000000005" />
+  <use href="#coin" x="21" y="662" width="45" height="50.400000000000006" />
+  <use href="#land" x="-13" y="692" width="115" height="128.8" />
+  <use href="#land" x="29" y="743" width="115" height="128.8" />
+  <use href="#coin" x="113" y="731" width="37" height="41.440000000000005" />
+  <use href="#land" x="485" y="748" width="119" height="133.28" />
+  <rect x="146" y="744" width="308" height="43" rx="14" fill="#ffda37" stroke="#a95016" stroke-width="4" />
+  <text x="300" y="771" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="18" letter-spacing="1" fill="#692a46">AVENTURA DA LIS</text>
+</svg>
