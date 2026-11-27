@@ -1,0 +1,12 @@
+"use client";
+import {useState} from "react";
+// ZIP without compression: JPEG files are already compressed.
+function crc32(a:Uint8Array){let c=-1;for(const b of a){c^=b;for(let i=0;i<8;i++)c=(c>>>1)^((c&1)?0xedb88320:0);}return (c^-1)>>>0;}
+export default function DownloadAll({ids}:{ids:string[]}){
+ const [status,setStatus]=useState("");const [busy,setBusy]=useState(false);
+ async function download(){setBusy(true);try{const parts:BlobPart[]=[];const central:BlobPart[]=[];let offset=0,centralSize=0;
+ for(let i=0;i<ids.length;i++){setStatus("Baixando "+(i+1)+" de "+ids.length);const response=await fetch("/album/foto/"+ids[i]);if(!response.ok)throw Error();const data=await response.arrayBuffer();const name=new TextEncoder().encode("lis-"+ids[i]+".jpg");const crc=crc32(new Uint8Array(data));const local=new ArrayBuffer(30);const l=new DataView(local);l.setUint32(0,0x04034b50,true);l.setUint16(4,20,true);l.setUint32(14,crc,true);l.setUint32(18,data.byteLength,true);l.setUint32(22,data.byteLength,true);l.setUint16(26,name.length,true);const dir=new ArrayBuffer(46);const d=new DataView(dir);d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,crc,true);d.setUint32(20,data.byteLength,true);d.setUint32(24,data.byteLength,true);d.setUint16(28,name.length,true);d.setUint32(42,offset,true);parts.push(local,name,data);central.push(dir,name);offset+=30+name.length+data.byteLength;centralSize+=46+name.length;if(offset>500_000_000)throw Error();}
+ const end=new ArrayBuffer(22);const e=new DataView(end);e.setUint32(0,0x06054b50,true);e.setUint16(8,ids.length,true);e.setUint16(10,ids.length,true);e.setUint32(12,centralSize,true);e.setUint32(16,offset,true);const url=URL.createObjectURL(new Blob([...parts,...central,end],{type:"application/zip"}));const a=document.createElement("a");a.href=url;a.download="album-princesa-lis.zip";a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);setStatus("Arquivo ZIP preparado.");
+ }catch{setStatus("Não foi possível baixar tudo. Tente novamente ou baixe as fotos individualmente.");}finally{setBusy(false);}}
+ return <div><button className="royalButton" disabled={busy||!ids.length} onClick={download}>Baixar todas (ZIP)</button><p role="status">{status}</p></div>;
+}
